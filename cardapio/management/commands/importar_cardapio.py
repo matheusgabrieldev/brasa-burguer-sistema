@@ -1,7 +1,7 @@
 """Importa o cardápio do OlaClick para o banco.
 
 Uso:
-    python manage.py importar_cardapio                      # usa ../dados/cardapio-2026-11-05.json
+    python manage.py importar_cardapio                      # usa dados/cardapio-portfolio.json
     python manage.py importar_cardapio caminho/arquivo.json
     python manage.py importar_cardapio --baixar-fotos       # também salva as fotos em media/produtos
 
@@ -21,7 +21,7 @@ from django.core.files.storage import default_storage
 from cardapio.importacao import importar
 from cardapio.models import Produto
 
-PADRAO = Path(settings.BASE_DIR).parent / "dados" / "cardapio-2026-11-05.json"
+PADRAO = Path(settings.BASE_DIR) / "dados" / "cardapio-portfolio.json"
 
 
 class Command(BaseCommand):

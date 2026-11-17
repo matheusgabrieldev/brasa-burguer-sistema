@@ -10,7 +10,7 @@ from cardapio.models import Categoria, GrupoOpcao, Produto
 from loja.models import Bairro, Configuracao, FormaPagamento, Horario
 
 PASTA = Path(__file__).parent
-REAL = PASTA.parents[2] / "dados" / "cardapio-2026-11-05.json"
+REAL = PASTA.parents[1] / "dados" / "cardapio-portfolio.json"
 MINI = PASTA / "fixtures" / "cardapio_mini.json"
 
 

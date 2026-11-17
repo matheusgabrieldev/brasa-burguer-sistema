@@ -6,3 +6,4 @@ __pycache__/
 staticfiles/
 .superpowers/
 .pytest_cache/
+db.backup-*.sqlite3
