@@ -227,9 +227,13 @@
 .hero-texto { top: auto; bottom: 14px; transform: none; }
 @media (min-width: 1000px) { .hero-texto { left: auto; right: 24px; bottom: 20px; max-width: none; } }
 
-/* Preto e branco, com Bricolage Grotesque nos títulos, botões e selos */
-.btn, .chip, .badge, .loja-nome, .secao h2, .prod-txt b, .dest-card b, .preco, .topbar, .sacola-lado h3, .bloco h2, .topo h1, .sheet-info h3, .selo { font-family: "Bricolage Grotesque", var(--font); }
-.loja-nome, .secao h2 { font-weight: 800; letter-spacing: -.02em; }
+/* Preto e branco, com Bricolage Grotesque nos botões e selos */
+.btn, .chip, .badge, .prod-txt b, .dest-card b, .preco, .topbar, .sacola-lado h3, .bloco h2, .topo h1, .sheet-info h3, .selo { font-family: "Bricolage Grotesque", var(--font); }
+/* Fonte da marca (Dela Gothic One) no nome da loja e nos títulos das seções. Ela é larga: tamanhos menores. */
+.loja-nome, .secao h2 { font-family: var(--display); font-weight: 400; letter-spacing: 0; }
+.loja-nome { font-size: 22px; }
+.secao h2 { font-size: 18px; }
+@media (min-width: 1000px) { .loja-nome { font-size: 27px; } .secao h2 { font-size: 21px; } }
 .chip { font-weight: 700; font-size: 12.5px; }
 .btn { font-weight: 800; letter-spacing: -.005em; }
 .prod-txt .badge { padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 800; letter-spacing: .06em; }

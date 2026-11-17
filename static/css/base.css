@@ -6,6 +6,8 @@
 @font-face { font-family: "Instrument Sans"; font-weight: 400; font-display: swap; src: url("../fonts/instrument-sans-latin-400-normal.woff2") format("woff2"); }
 @font-face { font-family: "Instrument Sans"; font-weight: 500; font-display: swap; src: url("../fonts/instrument-sans-latin-500-normal.woff2") format("woff2"); }
 @font-face { font-family: "Instrument Sans"; font-weight: 600; font-display: swap; src: url("../fonts/instrument-sans-latin-600-normal.woff2") format("woff2"); }
+/* Fonte da marca (logo e títulos). Só tem peso 400, que já é bem pesado. */
+@font-face { font-family: "Dela Gothic One"; font-weight: 400; font-display: swap; src: url("../fonts/dela-gothic-one-latin-400-normal.woff2") format("woff2"); }
 
 /* ===== Visual da loja: branco com a marca do selo (preto e amarelo de apoio) ===== */
 :root {
@@ -24,10 +26,11 @@
   --apoio: #F2B705;           /* amarelo de apoio: só com texto preto em cima, nunca texto amarelo no branco */
   --on-apoio: #111111;
   --apoio-soft: rgba(242, 183, 5, .18);
+  --creme: #F6EAD7;           /* creme da marca: contorno do logo e respiro sobre o preto */
   --badge-bg: #111111;
   --badge-text: #ffffff;
   --font: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --display: "Bricolage Grotesque", sans-serif;
+  --display: "Dela Gothic One", "Bricolage Grotesque", sans-serif;
   --display-weight: 400;
   --display-transform: none;
   --display-spacing: 0;

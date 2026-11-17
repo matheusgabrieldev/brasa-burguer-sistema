@@ -12,7 +12,7 @@
 
 /* login */
 .ger-entrar { max-width: 380px; margin: 0 auto; padding: 48px 16px; text-align: center; }
-.ger-entrar h1 { margin: 14px 0 4px; font-family: "Bricolage Grotesque", var(--font); }
+.ger-entrar h1 { margin: 14px 0 4px; font-family: var(--display); font-weight: 400; }
 .ger-entrar .bloco { margin: 22px 0 16px; text-align: left; }
 .ger-logo { width: 88px; height: 88px; border-radius: 50%; margin: 0 auto; box-shadow: var(--shadow); }
 .ger-voltar { font-size: 14px; }
@@ -21,11 +21,11 @@
 .ger-topo { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--surface); border-bottom: 1px solid var(--line); }
 .ger-topo img { width: 44px; height: 44px; border-radius: 50%; }
 .ger-topo div { flex: 1; min-width: 0; }
-.ger-topo h1 { margin: 0; font-size: 19px; font-family: "Bricolage Grotesque", var(--font); }
+.ger-topo h1 { margin: 0; font-size: 19px; font-family: var(--display); font-weight: 400; }
 .ger-acoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 14px 16px 0; }
 .ger-busca { padding: 12px 16px 0; }
 .ger-cat { padding: 6px 16px 0; }
-.ger-cat h2 { font-size: 16px; margin: 18px 0 10px; font-family: "Bricolage Grotesque", var(--font); }
+.ger-cat h2 { font-size: 16px; margin: 18px 0 10px; font-family: var(--display); font-weight: 400; }
 .ger-prod { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; padding: 10px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
 .ger-prod.escondido { opacity: .6; }
 .ger-prod-link { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; text-decoration: none; }
