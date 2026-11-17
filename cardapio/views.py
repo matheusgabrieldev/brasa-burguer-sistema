@@ -41,7 +41,8 @@ def cardapio(request):
     )
     categorias = [c for c in categorias if c.produtos_visiveis]
     destaques = list(visiveis.filter(destaque=True, categoria__visivel=True))
-    banner = [p for p in visiveis.filter(categoria__visivel=True) if p.foto][:3]
+    # Banner só com fotos de burgers: as artes de promoção têm texto e logo próprios.
+    banner = [p for p in visiveis.filter(categoria__visivel=True).exclude(categoria__nome__icontains="promo") if p.foto][:3]
     agendavel, agendamento_texto = _agendamento()
     return render(
         request,
