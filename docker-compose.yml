@@ -1,0 +1,31 @@
+# Ambiente local (DEBUG=1) com PostgreSQL. Subir: docker compose up --build
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: brasaburguer
+      POSTGRES_USER: brasa
+      POSTGRES_PASSWORD: brasa-local
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U brasa -d brasaburguer"]
+      interval: 3s
+      retries: 10
+  web:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DEBUG: "1"
+      LOAD_DOTENV: "0"
+      SECRET_KEY: dev-local-docker
+      ALLOWED_HOSTS: localhost,127.0.0.1
+      DATABASE_URL: postgres://brasa:brasa-local@db:5432/brasaburguer
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+volumes:
+  pgdata:
