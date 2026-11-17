@@ -1,0 +1,37 @@
+{% extends "gerenciar/base.html" %}
+{% load static %}
+{% block titulo %}Pedidos{% endblock %}
+{% block estilos %}<link rel="stylesheet" href="{% static 'css/painel.css' %}">{% endblock %}
+{% block app_classe %} ger-app-largo{% endblock %}
+{% block conteudo %}
+{% include "gerenciar/_topo.html" with aba="pedidos" titulo_topo="Pedidos" %}
+
+<div class="painel-barra">
+  {# Busca: sem JS, Enter recarrega com ?q=; com htmx troca as colunas e cancela a consulta de 5 s em voo. #}
+  <form id="filtros" class="painel-busca" method="get" action="{% url 'gerenciar:pedidos' %}" role="search">
+    <input class="input" type="search" name="q" value="{{ busca }}" placeholder="🔍 Buscar nº, nome ou telefone"
+           autocomplete="off" aria-label="Buscar pedido"
+           hx-get="{% url 'gerenciar:pedidos_colunas' %}" hx-trigger="input changed delay:400ms, search"
+           hx-target="#colunas" hx-swap="outerHTML" hx-include="#filtro-tipo" hx-sync="#colunas:replace">
+  </form>
+  {% if eh_dono %}{% include "gerenciar/pedidos/_total.html" %}{% endif %}
+  <details class="painel-menu">
+    <summary class="btn btn-line btn-peq" aria-label="Mais ações">⋯</summary>
+    <div class="painel-menu-caixa">
+      {% include "gerenciar/pedidos/_finalizar.html" %}
+    </div>
+  </details>
+</div>
+
+{% comment %}
+O navegador só toca som depois do primeiro toque na página. O painel.js esconde a faixa quando
+o som fica liberado e mostra de novo se o celular suspender o som (aba em segundo plano).
+{% endcomment %}
+<button type="button" id="faixa-som" class="painel-faixa">🔔 Toque para ativar o som dos pedidos</button>
+
+{% include "gerenciar/pedidos/_colunas.html" %}
+
+{# Detalhe do pedido: o cartão carrega `_detalhe.html` aqui dentro; vazio = escondido (CSS :empty). #}
+<div id="detalhe" class="detalhe-caixa"></div>
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/painel.js' %}"></script>{% endblock %}

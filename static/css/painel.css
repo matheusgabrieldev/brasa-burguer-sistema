@@ -1,0 +1,145 @@
+/* ===== Painel de pedidos (/gerenciar/) — notebook da cozinha (~1366 px) e celular (360 px) =====
+   Só esta página carrega este arquivo. Cores: tokens do base.css (amarelo só com texto preto,
+   vermelho só para alerta). */
+
+/* a área da loja é estreita (640 px); o painel usa a tela toda no PC */
+.ger-app.ger-app-largo { max-width: none; }
+
+/* barra de cima: busca, total do dia (Dono) e menu ⋯ */
+.painel-barra { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px 16px 0; }
+.painel-busca { flex: 1 1 220px; min-width: 0; }
+.painel-busca .input { padding: 9px 14px; border-radius: 999px; min-height: 42px; }
+.painel-total { display: flex; align-items: center; gap: 4px; font-weight: 600; white-space: nowrap; }
+/* olho: a classe fica no <body> (o bloco do total é trocado a cada consulta) */
+.total-escondido .painel-total .money { filter: blur(6px); }
+.painel-olho { width: 42px; height: 42px; border: 0; background: none; font-size: 18px; border-radius: 10px; }
+.painel-menu { position: relative; }
+.painel-menu summary { list-style: none; min-width: 44px; min-height: 42px; font-size: 18px; }
+.painel-menu summary::-webkit-details-marker { display: none; }
+.painel-menu-caixa { position: absolute; right: 0; top: calc(100% + 6px); z-index: 20; width: 220px; max-width: calc(100vw - 32px);
+  padding: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); }
+
+/* faixa do som: o painel.js põe `hidden` quando o som está liberado e tira se o navegador suspender */
+.painel-faixa { display: block; width: calc(100% - 32px); margin: 10px 16px 0; min-height: 44px; padding: 10px 14px;
+  border: 1px solid var(--apoio); border-radius: 12px; background: var(--apoio-soft); color: var(--text); font-weight: 600; text-align: left; }
+.painel-faixa[hidden] { display: none; }
+
+/* pílulas de tipo com contador */
+.painel-pilulas { display: flex; gap: 6px; padding: 12px 16px 0; overflow-x: auto; scrollbar-width: none; }
+.pilula { flex: none; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 8px 14px; border-radius: 999px;
+  border: 1px solid var(--line); background: var(--surface); text-decoration: none; font-weight: 600; font-size: 14px; }
+.pilula i { font-style: normal; font-size: 12.5px; opacity: .7; font-variant-numeric: tabular-nums; }
+.pilula.ativa { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.painel-aviso { margin: 10px 16px 0; font-size: 14px; }
+.painel-aviso a { display: inline-flex; align-items: center; min-height: 40px; padding: 0 8px; font-weight: 600; }
+
+/* abas de etapa: só no celular */
+.painel-etapas { display: none; }
+
+/* colunas lado a lado no PC */
+.painel-colunas { display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); gap: 10px; padding: 12px 16px; align-items: start; }
+.painel-colunas.uma { grid-template-columns: minmax(0, 520px); }
+.coluna { background: #eceef2; border-radius: 14px; padding: 8px; min-height: 240px; min-width: 0; }
+.coluna h2 { display: flex; justify-content: space-between; margin: 4px 6px 10px; font-size: 14px; font-family: var(--display); }
+.coluna h2 span { font-variant-numeric: tabular-nums; color: var(--muted); }
+.coluna-vazia { margin: 18px 6px; text-align: center; color: var(--muted); font-size: 13px; }
+.coluna-mais { display: block; padding: 10px; text-align: center; font-weight: 600; font-size: 14px; }
+
+/* cartão do pedido */
+.cartao { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; box-shadow: var(--shadow); }
+.cartao.novo { border: 2px solid var(--apoio); }
+.cartao.apagado { opacity: .62; box-shadow: none; }
+.cartao-l1, .cartao-l3 { display: flex; justify-content: space-between; align-items: center; gap: 6px; }
+.cartao-num { font-size: 16px; font-weight: 800; }
+.cartao-tag { flex: 1; min-width: 0; font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cartao-tempo { font-size: 12.5px; font-weight: 700; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.cartao-tempo.tempo-vermelho { color: var(--alert); }
+.cartao-feito { display: inline-block; margin-top: 4px; padding: 1px 6px; border-radius: 6px; background: var(--surface-2); font-size: 11.5px; font-weight: 600; }
+.cartao-cli { margin: 4px 0 1px; font-weight: 600; overflow-wrap: anywhere; }
+.cartao-meta { color: var(--muted); font-size: 12.5px; overflow-wrap: anywhere; }
+.cartao-l3 { margin-top: 6px; }
+.cartao-pg { min-width: 0; font-size: 12px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cartao-pg.ok { color: var(--ok); }
+.cartao-pg.nao { color: var(--muted); }
+.riscado { text-decoration: line-through; color: var(--muted); }
+.cartao-motivo { margin: 4px 0 0; font-size: 12.5px; color: var(--alert); overflow-wrap: anywhere; }
+.cartao-acao { margin-top: 8px; }
+.cartao-botao { width: 100%; min-height: 42px; padding: 8px 12px; font-size: 14px; border-radius: 999px; }
+
+/* cartão abre o detalhe ao toque */
+.cartao[hx-get] { cursor: pointer; }
+.cartao:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* ===== detalhe do pedido =====
+   Básico: painel por cima das colunas, à direita no PC e tela cheia no celular.
+   Vazio = escondido (o "Fechar" esvazia #detalhe). */
+.detalhe-caixa { position: fixed; top: 0; right: 0; bottom: 0; z-index: 40; width: min(440px, 100%);
+  overflow-y: auto; background: var(--bg); border-left: 1px solid var(--line); box-shadow: -6px 0 24px rgba(16, 24, 40, .12); }
+.detalhe-caixa:empty { display: none; }
+.detalhe { padding: 12px 16px 24px; font-size: 14px; }
+.detalhe-topo { margin-bottom: 10px; }
+.so-cel { display: none; }  /* "← Voltar" só no celular; no PC o botão diz "✕ Fechar" */
+.detalhe-fechar { min-height: 42px; }
+.detalhe-caixa-bloco { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; margin-bottom: 10px; }
+.detalhe-cab { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px; }
+.detalhe-num { font-size: 20px; font-weight: 800; }
+.detalhe-tag { font-size: 12px; font-weight: 600; padding: 2px 7px; border-radius: 6px; background: var(--surface-2); }
+.detalhe-etapa { padding: 3px 10px; border-radius: 999px; background: var(--apoio); color: var(--on-apoio); font-weight: 700; font-size: 12.5px; }
+.detalhe-etapa.cancelado { background: var(--alert); color: #fff; }
+.detalhe-cli { margin: 8px 0 2px; overflow-wrap: anywhere; }
+.detalhe-tel { display: inline-flex; align-items: center; min-height: 40px; padding: 0 6px; }  /* alvo de toque */
+.detalhe-meta { margin: 2px 0 0; color: var(--muted); font-size: 13px; overflow-wrap: anywhere; }
+.detalhe-motivo { margin: 6px 0 0; color: var(--alert); font-weight: 600; overflow-wrap: anywhere; }
+.detalhe-item { display: flex; justify-content: space-between; gap: 8px; margin-top: 6px; }
+.detalhe-op { margin-left: 18px; color: var(--muted); font-size: 13px; }
+.detalhe-obs { margin: 4px 0 0 18px; padding: 4px 8px; border-left: 4px solid var(--apoio); border-radius: 4px;
+  background: var(--apoio-soft); color: var(--text); font-weight: 600; overflow-wrap: anywhere; }
+.detalhe-obs.geral { margin: 8px 0 4px; padding: 6px 8px; }
+.detalhe-linha { display: flex; justify-content: space-between; gap: 8px; margin-top: 3px; color: var(--muted); }
+.detalhe-linha.total { color: var(--text); font-weight: 800; font-size: 15px; }
+.detalhe-pg { white-space: nowrap; }
+.detalhe-pg.ok { color: var(--ok); }
+.detalhe-pg.nao { color: var(--alert); }
+.detalhe-titulo { display: block; margin: 12px 0 6px; color: var(--muted); font-size: 12.5px; font-weight: 600; }
+.detalhe-caixa-bloco > .detalhe-titulo:first-child { margin-top: 0; }
+.detalhe-botoes { display: flex; flex-wrap: wrap; gap: 6px; }
+.detalhe-botao { min-height: 42px; padding: 8px 14px; font-size: 14px; border-radius: 999px; }
+.detalhe-zap { background: #25d366; color: #0b2e17; }  /* texto escuro no verde: mesmo do .btn-whats (cliente.css) */
+.detalhe-linha-form { display: flex; gap: 6px; }
+.detalhe-linha-form .input { flex: 1; min-width: 0; padding: 9px 12px; }
+.detalhe-voltar { margin-top: 10px; min-height: 40px; padding: 0; border: 0; background: none; color: var(--muted);
+  font-size: 13.5px; text-decoration: underline; }
+.detalhe-hist { margin: 0; padding-left: 18px; color: var(--muted); font-size: 13px; }
+.detalhe-hist li { margin: 3px 0; overflow-wrap: anywhere; }
+
+/* atalho "Avisar no WhatsApp": aparece ~8 s depois de Pronto/Saiu/Cancelar, por cima até do detalhe */
+.zap-atalho { position: fixed; left: 50%; bottom: 16px; z-index: 60; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 48px;
+  width: max-content; max-width: calc(100vw - 32px); padding: 10px 22px; border-radius: 999px;
+  background: #25d366; color: #0b2e17; font-weight: 800; text-decoration: none; text-align: center;
+  box-shadow: 0 6px 20px rgba(16, 24, 40, .25); }
+.zap-atalho small { font-weight: 600; font-size: 12.5px; opacity: .95; }
+.zap-atalho[hidden] { display: none; }
+
+/* ===== celular e tablet estreito: uma etapa por vez =====
+   O painel.js põe a classe "com-abas" no <body> e reaplica a "ativa" depois de cada consulta.
+   Sem JS, as colunas ficam empilhadas e as abas viram atalhos para cada uma. */
+@media (max-width: 760px) {
+  .painel { display: flex; flex-direction: column; }  /* abas de etapa em cima, pílulas de tipo logo abaixo */
+  .painel-etapas { order: -1; display: flex; gap: 4px; padding: 12px 16px 0; overflow-x: auto; scrollbar-width: none; }
+  .painel-etapas a { flex: 1 0 auto; min-height: 40px; display: flex; align-items: center; justify-content: center; gap: 4px;
+    padding: 6px 10px; border-radius: 10px; background: #eceef2; text-decoration: none; font-weight: 700; font-size: 13px; }
+  .painel-etapas a i { font-style: normal; font-variant-numeric: tabular-nums; }
+  .painel-etapas a.ativa { background: var(--accent); color: var(--on-accent); }
+  /* etapa com pedido que ninguém abriu: borda amarela, igual ao cartão novo */
+  .painel-etapas a.tem-novo { box-shadow: inset 0 0 0 2px var(--apoio); }
+  .painel-colunas, .painel-colunas.uma { grid-template-columns: minmax(0, 1fr); }
+  .coluna { min-height: 0; }
+  .com-abas .painel-colunas .coluna:not(.ativa) { display: none; }
+  .painel-total { order: 3; flex-basis: 100%; justify-content: space-between; }
+  /* detalhe em tela cheia, com "← Voltar"; a página de trás não rola junto */
+  .detalhe-caixa { width: 100%; border-left: 0; box-shadow: none; }
+  .detalhe-aberto { overflow: hidden; }
+  .so-pc { display: none; }
+  .so-cel { display: inline; }
+}

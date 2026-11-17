@@ -1,0 +1,26 @@
+{% extends "gerenciar/base.html" %}
+{% block conteudo %}
+{% include "gerenciar/_topo.html" with aba="produtos" %}
+
+<div class="ger-acoes">
+  <a class="btn" href="{% url 'gerenciar:novo' %}">+ Novo produto</a>
+</div>
+
+<form class="ger-busca" method="get" action="{% url 'gerenciar:lista' %}">
+  <input class="input" name="q" value="{{ q }}" type="search" placeholder="Procurar produto…" autocomplete="off">
+</form>
+
+{% for item in categorias %}
+<section class="ger-cat">
+  <h2>{{ item.categoria.nome }} <small class="muted">{{ item.produtos|length }}</small>{% if not item.categoria.visivel %} <span class="badge badge-alerta">Categoria escondida</span>{% endif %}</h2>
+  {% for p in item.produtos %}
+    {% include "gerenciar/_produto_linha.html" with primeiro=forloop.first ultimo=forloop.last %}
+  {% empty %}
+  <p class="muted">Nenhum produto nesta categoria.</p>
+  {% endfor %}
+</section>
+{% empty %}
+<p class="muted ger-dica">Nenhum produto encontrado.</p>
+{% endfor %}
+<p class="muted ger-dica">Dica: a chave ao lado de cada produto esconde ou mostra no cardápio (ex.: quando acabar um ingrediente). As setas mudam a ordem dentro da categoria. Toque no produto para editar.</p>
+{% endblock %}

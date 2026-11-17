@@ -1,0 +1,22 @@
+{% load static %}
+{% comment %}
+Topo de todas as telas da área da loja.
+- titulo_topo: título que a página manda (padrão "Meu cardápio").
+- somente_equipe: o painel manda True para quem é da Equipe; aí só aparecem Pedidos e Sair
+  (as outras telas são só do Dono, então nelas a variável nem existe e tudo aparece).
+{% endcomment %}
+<header class="ger-topo">
+  <img src="{% static 'img/logo.png' %}" alt="">
+  <div><h1>{{ titulo_topo|default:"Meu cardápio" }}</h1><small class="muted">Área da loja</small></div>
+  <form method="post" action="{% url 'gerenciar:sair' %}">{% csrf_token %}<button class="btn btn-ghost btn-peq" type="submit">Sair</button></form>
+</header>
+<nav class="ger-abas">
+  <a href="{% url 'gerenciar:pedidos' %}" {% if aba == 'pedidos' %}class="ativa"{% endif %}>Pedidos</a>
+  {% if not somente_equipe %}
+  <a href="{% url 'gerenciar:lista' %}" {% if aba == 'produtos' %}class="ativa"{% endif %}>Produtos</a>
+  <a href="{% url 'gerenciar:categorias' %}" {% if aba == 'categorias' %}class="ativa"{% endif %}>Categorias</a>
+  <a href="{% url 'gerenciar:grupos' %}" {% if aba == 'grupos' %}class="ativa"{% endif %}>Opções</a>
+  <a href="{% url 'gerenciar:loja' %}" {% if aba == 'loja' %}class="ativa"{% endif %}>Loja</a>
+  <a href="{% url 'cardapio' %}" target="_blank" rel="noopener">Ver cardápio ↗</a>
+  {% endif %}
+</nav>

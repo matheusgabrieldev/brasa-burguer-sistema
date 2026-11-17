@@ -1,0 +1,12 @@
+{% extends "gerenciar/base.html" %}
+{% load static %}
+{% block titulo %}Acesso bloqueado{% endblock %}
+{% block conteudo %}
+<div class="ger-entrar">
+  <img class="ger-logo" src="{% static 'img/logo.png' %}" alt="">
+  <h1>Acesso bloqueado</h1>
+  <p class="erro">Muitas tentativas. Aguarde 15 minutos para tentar novamente.</p>
+  <p class="muted">Isso protege a sua conta contra quem tenta adivinhar a senha.</p>
+  <a class="muted ger-voltar" href="{% url 'cardapio' %}">← Voltar ao cardápio</a>
+</div>
+{% endblock %}

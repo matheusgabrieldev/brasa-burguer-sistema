@@ -1,0 +1,28 @@
+/* ===== Checkout (o resto do visual vem de cliente.css: .bloco, .toggle, .pag, .resumo) ===== */
+
+/* Entrega / Retirada / No local lado a lado */
+.toggle-3 { grid-template-columns: repeat(3, 1fr); }
+.toggle-3 label { padding: 12px 6px; font-size: 14px; }
+
+/* "Usar cadastro anterior": endereços salvos neste aparelho */
+.cadastro { margin-bottom: 14px; }
+.cadastro-titulo { font-size: 13px; font-weight: 600; color: var(--muted); margin: 0 0 8px; }
+.cadastro-card { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; margin-bottom: 8px; font-size: 13.5px; }
+.cadastro-card span { flex: 1; min-width: 0; }
+.cadastro-card .btn { flex: none; padding: 8px 12px; font-size: 13px; }
+
+/* Lembrar de mim */
+.lembrar { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-weight: 600; font-size: 14px; cursor: pointer; }
+.lembrar input { width: 20px; height: 20px; accent-color: var(--accent); }
+
+/* Aviso de pedido agendado (loja fechada com abertura prevista) */
+.aviso-agenda { margin: 14px; padding: 12px 14px; border-radius: 12px; background: var(--apoio-soft); border-left: 5px solid var(--apoio); font-weight: 600; font-size: 14px; }
+#avisos-sacola .sacola-aviso { margin: 0 0 10px; }
+
+/* Campo com erro (o servidor diz qual) */
+.com-erro, .com-erro.input { border-color: var(--alert) !important; box-shadow: 0 0 0 3px rgba(229, 72, 61, .15); border-radius: 12px; }
+.erro:empty { display: none; }
+.erro { margin: 0 14px 10px; }
+
+.enviar-box { padding: 0 14px 20px; }
+.up-card { cursor: pointer; }

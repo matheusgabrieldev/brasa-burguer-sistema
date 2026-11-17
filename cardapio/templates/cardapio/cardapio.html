@@ -1,0 +1,120 @@
+{% extends "base_cliente.html" %}
+{% load static brl %}
+{% block body_attrs %}data-turno="{{ status.turno }}" data-aberta="{% if status.aberta %}1{% else %}0{% endif %}" data-agendavel="{% if agendavel %}1{% else %}0{% endif %}"{% if agendavel %} data-agendamento-texto="{{ agendamento_texto }}"{% endif %}{% endblock %}
+
+{% block conteudo %}
+<div class="vitrine">
+<header class="hero">
+  <div class="hero-grid">
+    {% for p in banner %}<img src="{{ p.foto }}" alt="{{ p.nome }}">{% endfor %}
+  </div>
+</header>
+
+<section class="loja-card">
+  <div class="loja-logo"><img src="{% static 'img/logo.png' %}" alt="{{ loja.nome }}"></div>
+  <h1 class="loja-nome">{{ loja.nome }}</h1>
+  <p class="loja-sub">{% if loja.slogan %}{{ loja.slogan }}{% if loja.endereco %} · {% endif %}{% endif %}{{ loja.endereco }}</p>
+  <span class="status {% if status.aberta %}aberta{% else %}fechada{% endif %}">{{ status.texto }}</span>
+  <div class="loja-infos">
+    <div><b>{{ loja.prazo }}</b>entrega</div>
+    <div><b>{{ loja.pedido_minimo|brl }}</b>pedido mínimo</div>
+  </div>
+</section>
+</div>
+
+<div class="layout" id="cardapio">
+<aside class="lado">
+<button class="linha-acao" type="button" id="abrir-taxa">
+  <span class="ic">📍</span>
+  <span><b>Calcular taxa de entrega</b><small id="taxa-escolhida">Escolha seu bairro</small></span>
+  <span class="seta">›</span>
+</button>
+</aside>
+<div class="principal">
+
+<nav class="cat-bar" id="cat-bar">
+  <div class="cat-bar-top">
+    <div class="cat-chips" id="cat-chips">
+      {% if destaques %}<a class="chip" href="#sec-destaques">Destaques</a>{% endif %}
+      {% for c in categorias %}<a class="chip" href="#sec-{{ c.id }}">{{ c.nome }}</a>{% endfor %}
+    </div>
+    <button class="btn-busca" type="button" id="btn-busca" aria-label="Buscar">🔍</button>
+  </div>
+  <div class="busca hidden" id="busca-box"><input class="input" id="busca" type="search" placeholder="Buscar no cardápio…" autocomplete="off"></div>
+</nav>
+
+{% if destaques %}
+<section class="secao" id="sec-destaques">
+  <h2>Destaques</h2>
+  <div class="destaques">
+    {% for p in destaques %}{% if p.esgotado_em == hoje %}
+    <div class="dest-card esgotado">
+      {% if p.foto %}<img src="{{ p.foto }}" alt="{{ p.nome }}" loading="lazy">{% endif %}
+      <div><b>{{ p.nome }}</b><span class="badge badge-esgotado">Esgotado</span></div>
+    </div>
+    {% else %}
+    <button class="dest-card" type="button" hx-get="{% url 'produto_modal' p.slug %}" hx-target="#sheet-raiz">
+      {% if p.foto %}<img src="{{ p.foto }}" alt="{{ p.nome }}" loading="lazy">{% endif %}
+      <div><b>{{ p.nome }}</b><span class="preco money">{{ p.preco|brl }}</span></div>
+    </button>
+    {% endif %}{% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% for c in categorias %}
+<section class="secao" id="sec-{{ c.id }}">
+  <h2>{{ c.nome }}</h2>
+  {% for p in c.produtos_visiveis %}
+  {% if p.esgotado_em == hoje %}
+  <div class="prod esgotado" data-busca="{{ p.nome|lower }} {{ p.descricao|lower }}">
+    <span class="prod-txt">
+      <span class="badge badge-esgotado">Esgotado</span>
+      <b>{{ p.nome }}</b>
+      <p>{{ p.descricao }}</p>
+      <span class="preco money">{{ p.preco|brl }}</span>
+    </span>
+    {% if p.foto %}<img src="{{ p.foto }}" alt="{{ p.nome }}" loading="lazy">{% endif %}
+  </div>
+  {% else %}
+  <button class="prod" type="button" hx-get="{% url 'produto_modal' p.slug %}" hx-target="#sheet-raiz" data-busca="{{ p.nome|lower }} {{ p.descricao|lower }}">
+    <span class="prod-txt">
+      {% if p.mais_pedido %}<span class="badge">Mais pedido</span>{% endif %}
+      <b>{{ p.nome }}</b>
+      <p>{{ p.descricao }}</p>
+      <span class="preco money">{{ p.preco|brl }}</span>
+    </span>
+    {% if p.foto %}<img src="{{ p.foto }}" alt="{{ p.nome }}" loading="lazy">{% endif %}
+  </button>
+  {% endif %}
+  {% endfor %}
+</section>
+{% endfor %}
+<p class="vazio-busca hidden" id="vazio-busca">Nada encontrado com esse nome.</p>
+</div>
+</div>
+
+<button class="sacola-bar hidden" id="sacola-bar" type="button"><span><span class="qtd" id="sacola-qtd">0</span>Ver sacola</span><span class="money" id="sacola-sub">R$ 0,00</span>{% if agendavel %}<small class="sacola-agenda" id="sacola-agenda"></small>{% endif %}</button>
+<div id="sacola-raiz"></div>
+
+<template id="tpl-taxa">
+  <div class="sheet-fundo" data-fechar>
+    <div class="sheet sheet-simples" role="dialog" aria-label="Calcular taxa de entrega">
+      <h3>Taxa de entrega</h3>
+      <p class="muted">Escolha seu bairro para ver a taxa.</p>
+      <select class="input" id="sel-bairro">
+        <option value="">Selecione o bairro</option>
+        {% for b in bairros %}<option value="{{ b.id }}" data-taxa="{{ b.taxa|stringformat:'s' }}">{{ b.nome }} — {{ b.taxa|brl }}</option>{% endfor %}
+      </select>
+      <div class="taxa-res hidden" id="taxa-res"></div>
+      <button class="btn btn-block" style="margin-top:14px" data-fechar type="button">Pronto</button>
+    </div>
+  </div>
+</template>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/sacola.js' %}"></script>
+<script src="{% static 'js/produto.js' %}"></script>
+<script src="{% static 'js/cardapio.js' %}"></script>
+{% endblock %}

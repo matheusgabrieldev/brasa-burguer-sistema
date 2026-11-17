@@ -1,0 +1,14 @@
+{% extends "gerenciar/base.html" %}
+{% block titulo %}Excluir {{ produto.nome }}{% endblock %}
+{% block conteudo %}
+<div class="topo"><a href="{% url 'gerenciar:editar' produto.pk %}" aria-label="Voltar">‹</a><h1>Excluir produto</h1></div>
+<section class="bloco">
+  <h2>Excluir “{{ produto.nome }}”?</h2>
+  <p>O produto some do cardápio para sempre e isso não pode ser desfeito. Os pedidos antigos continuam guardados.</p>
+  <p class="muted">Se for só por um tempo (acabou um ingrediente, por exemplo), é melhor <b>esconder</b> o produto em vez de excluir.</p>
+  <form method="post">{% csrf_token %}
+    <button class="btn btn-block btn-perigo-cheio" type="submit">Sim, excluir</button>
+  </form>
+  <a class="btn btn-line btn-block ger-cancelar" href="{% url 'gerenciar:editar' produto.pk %}">Não, voltar</a>
+</section>
+{% endblock %}

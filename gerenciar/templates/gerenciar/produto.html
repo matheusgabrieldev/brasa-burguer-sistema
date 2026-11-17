@@ -1,0 +1,83 @@
+{% extends "gerenciar/base.html" %}
+{% load brl %}
+{% block titulo %}{% if produto %}Editar {{ produto.nome }}{% else %}Novo produto{% endif %}{% endblock %}
+{% block conteudo %}
+<div class="topo"><a href="{% url 'gerenciar:lista' %}" aria-label="Voltar">‹</a><h1>{% if produto %}Editar produto{% else %}Novo produto{% endif %}</h1></div>
+
+<form method="post" enctype="multipart/form-data" id="form-produto" novalidate>{% csrf_token %}
+  {% if form.non_field_errors %}<p class="erro">{{ form.non_field_errors|join:" " }}</p>{% endif %}
+
+  <section class="bloco">
+    <h2>Foto</h2>
+    <label class="ger-foto" for="id_imagem">
+      <img id="foto-preview" src="{{ produto.foto|default:'' }}" alt="" {% if not produto.foto %}class="hidden"{% endif %}>
+      <span id="foto-vazia" {% if produto.foto %}class="hidden"{% endif %}>📷<br>Toque para escolher uma foto</span>
+    </label>
+    <input type="file" name="imagem" id="id_imagem" accept="image/*" class="ger-file">
+    <div class="ger-foto-acoes">
+      <label class="btn btn-line btn-peq" for="id_imagem">{% if produto.foto %}Trocar foto{% else %}Escolher foto{% endif %}</label>
+      {% if produto.imagem %}<label class="ger-check"><input type="checkbox" name="remover_foto"> Remover foto</label>{% endif %}
+    </div>
+    {% if form.imagem.errors %}<p class="erro-campo">{{ form.imagem.errors|join:" " }}</p>{% endif %}
+    <small class="muted">Pode ser foto do celular: ela é diminuída automaticamente para o cardápio ficar rápido.</small>
+  </section>
+
+  <section class="bloco">
+    <h2>Informações</h2>
+    {% include "gerenciar/_campo.html" with campo=form.nome %}
+    {% include "gerenciar/_campo.html" with campo=form.descricao %}
+    {% include "gerenciar/_campo.html" with campo=form.preco %}
+    {% include "gerenciar/_campo.html" with campo=form.categoria %}
+    <small class="muted">Categoria nova? Crie em “Categorias” e volte aqui.</small>
+  </section>
+
+  <section class="bloco">
+    <h2>Opções do cliente</h2>
+    <p class="muted ger-sub">Marque o que o cliente escolhe ao pedir este produto. O número define a ordem em que aparecem (1 aparece primeiro).</p>
+    {% for g in grupos %}
+    <div class="ger-grupo">
+      <label class="ger-grupo-marca">
+        <input type="checkbox" name="grupos" value="{{ g.grupo.id }}" {% if g.marcado %}checked{% endif %}>
+        <span>
+          <b>{{ g.grupo.nome }}</b>
+          <small class="ger-grupo-regra">{% if g.grupo.tipo == "unica" %}Escolhe 1{% else %}Escolhe até {{ g.grupo.maximo }}{% endif %}{% if g.grupo.obrigatorio %} · <span class="badge badge-req">Obrigatório</span>{% else %} · opcional{% endif %}</small>
+          <small class="muted">{% for o in g.grupo.opcoes.all %}{{ o.nome }}{% if o.preco %} (+{{ o.preco|brl }}){% endif %}{% if not forloop.last %}, {% endif %}{% endfor %}</small>
+        </span>
+      </label>
+      <input class="input ger-ordem" type="number" min="1" max="99" inputmode="numeric" name="ordem_{{ g.grupo.id }}" value="{{ g.ordem }}" placeholder="Nº" aria-label="Ordem de {{ g.grupo.nome }}">
+    </div>
+    {% empty %}
+    <p class="muted">Ainda não há grupos de opção cadastrados.</p>
+    {% endfor %}
+  </section>
+
+  <section class="bloco">
+    <h2>Como aparece</h2>
+    <label class="ger-check ger-linha">{{ form.visivel }} {{ form.visivel.label }}</label>
+    <label class="ger-check ger-linha">{{ form.destaque }} {{ form.destaque.label }}</label>
+    <label class="ger-check ger-linha">{{ form.mais_pedido }} {{ form.mais_pedido.label }}</label>
+    <label class="ger-check ger-linha">{{ form.sugerir_no_checkout }} {{ form.sugerir_no_checkout.label }}</label>
+  </section>
+
+  <div class="ger-salvar"><button class="btn btn-block" type="submit">{% if produto %}Salvar alterações{% else %}Adicionar ao cardápio{% endif %}</button></div>
+</form>
+
+{% if produto %}
+<div class="ger-excluir"><a class="btn btn-line btn-block btn-perigo" href="{% url 'gerenciar:excluir' produto.pk %}">Excluir produto</a></div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // mostra a foto escolhida antes de salvar
+  const inp = document.getElementById("id_imagem");
+  inp.onchange = () => {
+    const f = inp.files[0];
+    if (!f) return;
+    const img = document.getElementById("foto-preview");
+    img.src = URL.createObjectURL(f);
+    img.classList.remove("hidden");
+    document.getElementById("foto-vazia").classList.add("hidden");
+  };
+</script>
+{% endblock %}

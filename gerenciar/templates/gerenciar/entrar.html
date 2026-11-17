@@ -1,0 +1,18 @@
+{% extends "gerenciar/base.html" %}
+{% load static %}
+{% block titulo %}Entrar{% endblock %}
+{% block conteudo %}
+<div class="ger-entrar">
+  <img class="ger-logo" src="{% static 'img/logo.png' %}" alt="">
+  <h1>Área da loja</h1>
+  <p class="muted">Entre para cuidar do seu cardápio.</p>
+  <form method="post" class="bloco" novalidate>{% csrf_token %}
+    {% if form.errors %}<p class="erro" style="margin:0 0 12px">Usuário ou senha incorretos.</p>{% endif %}
+    <div class="field"><label for="id_username">Usuário</label><input class="input" id="id_username" name="username" autocomplete="username" autocapitalize="none" required value="{{ form.username.value|default:'' }}"></div>
+    <div class="field"><label for="id_password">Senha</label><input class="input" id="id_password" name="password" type="password" autocomplete="current-password" required></div>
+    <input type="hidden" name="next" value="{{ next|default:'/gerenciar/' }}">
+    <button class="btn btn-block" type="submit">Entrar</button>
+  </form>
+  <a class="muted ger-voltar" href="{% url 'cardapio' %}">← Voltar ao cardápio</a>
+</div>
+{% endblock %}

@@ -1,0 +1,8 @@
+{% comment %}
+"Finalizar todos" (menu ⋯). A quantidade da confirmação precisa estar sempre certa, então este
+botão volta junto com cada atualização das colunas (hx-swap-oob), igual ao total do dia.
+Conta os pedidos em preparo/pronto/saiu de qualquer dia e tipo: é exatamente o que ele conclui.
+{% endcomment %}
+<button type="button" class="btn btn-ghost btn-block" id="finalizar-todos"{% if atualizacao %} hx-swap-oob="true"{% endif %}
+        {% if qtd_finalizar %}hx-post="{% url 'gerenciar:pedidos_finalizar' %}" hx-swap="none"
+        hx-confirm="Finalizar {{ qtd_finalizar }} pedido{{ qtd_finalizar|pluralize }}?"{% else %}disabled{% endif %}>Finalizar todos{% if qtd_finalizar %} ({{ qtd_finalizar }}){% endif %}</button>

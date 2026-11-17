@@ -1,0 +1,33 @@
+{% extends "gerenciar/base.html" %}
+{% block titulo %}Bairros{% endblock %}
+{% block conteudo %}
+{% include "gerenciar/_topo.html" with aba="loja" %}
+{% include "gerenciar/_sub_loja.html" with sub="bairros" %}
+
+<section class="bloco">
+  <h2>Novo bairro</h2>
+  <form method="post" action="{% url 'gerenciar:bairros' %}" novalidate>{% csrf_token %}
+    {% include "gerenciar/_campo.html" with campo=novo.nome %}
+    {% include "gerenciar/_campo.html" with campo=novo.taxa %}
+    <label class="ger-check ger-linha">{{ novo.ativo }} {{ novo.ativo.label }}</label>
+    <button class="btn btn-block" type="submit">Adicionar bairro</button>
+  </form>
+</section>
+
+<p class="muted ger-dica">Taxa 0 = entrega grátis. Bairro desligado não aparece para o cliente.</p>
+{% for b, form in linhas %}
+<section class="bloco">
+  <form method="post" action="{% url 'gerenciar:bairro_editar' b.pk %}" novalidate>{% csrf_token %}
+    {% include "gerenciar/_campo.html" with campo=form.nome %}
+    {% include "gerenciar/_campo.html" with campo=form.taxa %}
+    <label class="ger-check ger-linha">{{ form.ativo }} {{ form.ativo.label }}</label>
+    <div class="ger-cat-acoes">
+      <button class="btn btn-peq" type="submit">Salvar</button>
+      <a class="btn btn-line btn-peq btn-perigo" href="{% url 'gerenciar:bairro_excluir' b.pk %}">Excluir</a>
+    </div>
+  </form>
+</section>
+{% empty %}
+<p class="muted ger-dica">Nenhum bairro cadastrado ainda.</p>
+{% endfor %}
+{% endblock %}

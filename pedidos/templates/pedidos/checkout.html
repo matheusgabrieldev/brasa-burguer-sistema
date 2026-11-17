@@ -1,0 +1,134 @@
+{% extends "base_cliente.html" %}
+{% load static brl %}
+{# Checkout. A parte fixa vem pronta daqui; o comportamento está em static/js/checkout.js #}
+{% block titulo %}Finalizar pedido · {{ loja.nome }}{% endblock %}
+{% block body_attrs %}data-turno="{{ status.turno }}" data-aberta="{% if status.aberta %}1{% else %}0{% endif %}" data-agendavel="{% if agendavel %}1{% else %}0{% endif %}"{% endblock %}
+
+{% block conteudo %}
+<div class="topo"><a href="{% url 'cardapio' %}" aria-label="Voltar ao cardápio">‹</a><h1>Finalizar pedido</h1></div>
+
+{% if fechada_sem_horario %}
+<div class="aviso-fechado" role="alert">A loja está fechada no momento.</div>
+{% elif agendavel %}
+<div class="aviso-agenda">{{ status.texto }}. Seu pedido fica agendado: escolha o horário lá embaixo.</div>
+{% endif %}
+
+<div id="vazia" class="bloco hidden" style="text-align:center">
+  <p>Sua sacola está vazia.</p>
+  <a class="btn" href="{% url 'cardapio' %}">Ver cardápio</a>
+</div>
+
+<div id="tem-itens">
+  <section class="bloco">
+    <h2>Itens</h2>
+    <div id="avisos-sacola"></div>
+    <div id="lista-itens"><p class="muted">Conferindo a sacola…</p></div>
+    <a href="{% url 'cardapio' %}" class="btn btn-line btn-block" style="margin-top:10px">+ Adicionar mais itens</a>
+  </section>
+
+  {% if sugestoes %}
+  <section class="bloco">
+    <h2>Complemente seu pedido</h2>
+    <div class="upsell">
+      {% for p in sugestoes %}
+      <button class="up-card" type="button" hx-get="{% url 'produto_modal' p.slug %}" hx-target="#sheet-raiz">
+        {% if p.foto %}<img src="{{ p.foto }}" alt="{{ p.nome }}" loading="lazy">{% endif %}
+        <div>{{ p.nome }}<span class="preco money">{{ p.preco|brl }}</span></div>
+      </button>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
+  <form id="form-pedido" novalidate>
+    <section class="bloco">
+      <h2>Seus dados</h2>
+      <div class="field"><label for="nome">Nome</label><input class="input" id="nome" data-campo="nome" autocomplete="name" maxlength="80" required></div>
+      <div class="field"><label for="tel">WhatsApp</label><input class="input" id="tel" data-campo="telefone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(81) 9 0000-0000" maxlength="20" required></div>
+    </section>
+
+    <section class="bloco">
+      <h2>Como quer receber?</h2>
+      <div class="toggle toggle-3" data-campo="tipo">
+        <label><input type="radio" name="tipo" value="delivery" checked><span>🛵 Entrega</span></label>
+        <label><input type="radio" name="tipo" value="retirada"><span>🏪 Retirada</span></label>
+        <label><input type="radio" name="tipo" value="local"><span>🍽️ No local</span></label>
+      </div>
+
+      <div id="campos-entrega" style="margin-top:14px">
+        {% if enderecos %}
+        <div class="cadastro" id="cadastro">
+          <p class="cadastro-titulo">Usar cadastro anterior</p>
+          {% for e in enderecos %}
+          <div class="cadastro-card">
+            <span>{{ aparelho.nome }} · {{ e.rua }}, {{ e.numero }} — {{ e.bairro.nome }}</span>
+            <button class="btn btn-line" type="button" data-usar="{{ forloop.counter0 }}">Usar este</button>
+          </div>
+          {% endfor %}
+          <button class="btn btn-ghost btn-block" type="button" id="outro-endereco">Outro endereço</button>
+        </div>
+        {% endif %}
+        <div class="field"><label for="bairro">Bairro</label>
+          <select class="input" id="bairro" data-campo="bairro">
+            <option value="">Selecione o bairro</option>
+            {% for b in bairros %}<option value="{{ b.id }}">{{ b.nome }} — {{ b.taxa|brl }}</option>{% endfor %}
+          </select></div>
+        <div class="field"><label for="rua">Rua</label><input class="input" id="rua" data-campo="rua" autocomplete="address-line1" maxlength="120" placeholder="Ex.: Rua das Flores"></div>
+        <div class="field"><label for="numero">Número</label><input class="input" id="numero" data-campo="numero" inputmode="numeric" maxlength="20" placeholder="Ex.: 120"></div>
+        <div class="field"><label for="ref">Ponto de referência</label><input class="input" id="ref" maxlength="200" placeholder="Ex.: perto da padaria"></div>
+      </div>
+      {% if loja.endereco %}<p id="info-retirada" class="muted hidden">Endereço da loja: {{ loja.endereco }}.</p>{% endif %}
+    </section>
+
+    <section class="bloco" data-campo="pagamento">
+      <h2>Pagamento <small class="muted">(na entrega, na retirada ou no local)</small></h2>
+      {% for f in formas %}
+      <label class="pag" data-tipos="{{ f.tipos|join:' ' }}"><input type="radio" name="pag" value="{{ f.codigo }}"><span>{{ f.nome }}</span>{% if f.acrescimo_pct %}<small>+{{ f.acrescimo_pct|floatformat:"-2" }}%</small>{% endif %}</label>
+      {% endfor %}
+      <p class="muted hidden" id="sem-forma">Nenhuma forma de pagamento para esse tipo de pedido.</p>
+      <div class="field hidden" id="campo-troco" style="margin-top:6px"><label for="troco">Troco para quanto? <small>(deixe vazio se não precisar)</small></label><input class="input" id="troco" data-campo="troco" inputmode="decimal" maxlength="12" placeholder="Ex.: 50"></div>
+    </section>
+
+    {% if agendavel %}
+    <section class="bloco">
+      <h2>Horário do pedido</h2>
+      <div class="field" style="margin:0"><label for="horario">Agendar para {{ horarios.0.1|date:"l, d/m" }}</label>
+        <select class="input" id="horario" data-campo="horario">
+          <option value="">Escolha o horário</option>
+          {% for valor, h in horarios %}<option value="{{ valor }}">{{ h|time:"H:i" }}</option>{% endfor %}
+        </select></div>
+    </section>
+    {% endif %}
+
+    <section class="bloco">
+      <div class="field" style="margin:0"><label for="obs">Observação do pedido</label><textarea class="input" id="obs" maxlength="500" placeholder="Ex.: interfone quebrado, ligar quando chegar"></textarea></div>
+      <label class="lembrar"><input type="checkbox" id="lembrar" checked> Lembrar de mim neste celular</label>
+    </section>
+
+    <section class="bloco resumo">
+      <div><span>Subtotal</span><span class="money" id="r-sub"></span></div>
+      <div id="linha-taxa"><span>Entrega</span><span class="money" id="r-taxa"></span></div>
+      <div id="linha-acr" class="hidden"><span>Acréscimo</span><span class="money" id="r-acr"></span></div>
+      <div class="total"><span>Total</span><span class="money" id="r-total"></span></div>
+      <p class="muted hidden" id="aviso-minimo"></p>
+    </section>
+    <p class="erro" id="erro" role="alert"></p>
+    <div class="enviar-box">
+      {% if fechada_sem_horario %}
+      <button class="btn btn-block" id="enviar" type="submit" disabled>A loja está fechada no momento.</button>
+      {% else %}
+      <button class="btn btn-block" id="enviar" type="submit">Enviar pedido</button>
+      {% endif %}
+    </div>
+  </form>
+</div>
+{{ dados_js|json_script:"dados-checkout" }}
+{% endblock %}
+
+{% block estilos %}<link rel="stylesheet" href="{% static 'css/checkout.css' %}">{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/sacola.js' %}"></script>
+<script src="{% static 'js/produto.js' %}"></script>
+<script src="{% static 'js/checkout.js' %}"></script>
+{% endblock %}

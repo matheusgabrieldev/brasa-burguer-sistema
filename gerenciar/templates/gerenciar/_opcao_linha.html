@@ -1,0 +1,11 @@
+<div class="ger-opcao" data-linha>
+  {{ f.id }}{{ f.grupo }}
+  {% if f.non_field_errors %}<p class="erro-campo">{{ f.non_field_errors|join:" " }}</p>{% endif %}
+  {% include "gerenciar/_campo.html" with campo=f.nome %}
+  <div class="ger-opcao-nums">
+    {% include "gerenciar/_campo.html" with campo=f.preco %}
+    {% include "gerenciar/_campo.html" with campo=f.qtd_maxima %}
+    {% include "gerenciar/_campo.html" with campo=f.ordem %}
+  </div>
+  <label class="ger-check">{{ f.DELETE }} Remover esta opção</label>
+</div>

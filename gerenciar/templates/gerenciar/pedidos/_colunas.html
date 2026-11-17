@@ -1,0 +1,61 @@
+{% comment %}
+Pedaço que se atualiza sozinho. Ele mesmo carrega o endereço da próxima consulta, já com os
+filtros e a versão (`v`) que está na tela: se o servidor responder 204, nada é trocado.
+Atualiza: a cada 5 s com a aba visível; a cada 15 s com a aba escondida (o Caio em outra aba
+ainda vê o título piscar e ouve o alarme); na hora quando a aba volta a aparecer e depois de
+um botão do cartão (evento "painel-mudou").
+{% endcomment %}
+<div id="colunas" class="painel"
+     data-versao="{{ versao }}" data-novos="{{ painel.novos }}"
+     hx-get="{% url 'gerenciar:pedidos_colunas' %}?tipo={{ tipo|urlencode }}&amp;q={{ busca|urlencode }}{% if todos %}&amp;todos=1{% endif %}&amp;v={{ versao|urlencode }}"
+     hx-trigger="every 5s [document.visibilityState=='visible'], every 15s [document.visibilityState=='hidden'], painel-mudou from:body, visibilitychange[document.visibilityState=='visible'] from:document"
+     hx-swap="outerHTML">
+  {# Tipo escolhido: vai junto na busca (hx-include) e no Enter sem JS (form="filtros"). #}
+  <input type="hidden" id="filtro-tipo" name="tipo" value="{{ tipo }}" form="filtros">
+
+  {# Pílula filtra dentro da busca (leva o q do campo); hx-sync: uma consulta de 5 s atrasada não desfaz a troca. #}
+  <nav class="painel-pilulas" aria-label="Filtrar por tipo">
+    {% for f in pilulas %}
+    <a href="{% url 'gerenciar:pedidos' %}?tipo={{ f.tipo }}{% if busca %}&amp;q={{ busca|urlencode }}{% endif %}" class="pilula{% if f.ativa %} ativa{% endif %}"
+       hx-get="{% url 'gerenciar:pedidos_colunas' %}?tipo={{ f.tipo }}" hx-include="#filtros [name=q]" hx-sync="#colunas:replace"
+       hx-target="#colunas" hx-swap="outerHTML"
+       hx-push-url="{% url 'gerenciar:pedidos' %}?tipo={{ f.tipo }}{% if busca %}&amp;q={{ busca|urlencode }}{% endif %}">{{ f.rotulo }}<i>{{ f.n }}</i></a>
+    {% endfor %}
+  </nav>
+
+  {% if busca %}
+  <p class="painel-aviso">Resultado para “{{ busca }}” · <a href="{% url 'gerenciar:pedidos' %}{% if tipo %}?tipo={{ tipo }}{% endif %}">✕ limpar</a></p>
+  {% endif %}
+
+  {% if so_agendados %}
+  <div class="painel-colunas uma">
+    <section class="coluna" id="coluna-agendados">
+      <h2>Agendados <span>{{ painel.agendados|length }}</span></h2>
+      {% for p in painel.agendados %}{% include "gerenciar/pedidos/_cartao.html" %}{% empty %}<p class="coluna-vazia">Nenhum pedido agendado.</p>{% endfor %}
+    </section>
+  </div>
+  {% else %}
+  {# No celular: uma etapa por vez. Sem JS, as abas são âncoras que levam até a coluna. #}
+  {% if painel.colunas|length > 1 %}
+  <nav class="painel-etapas" aria-label="Etapas">
+    {% for c in painel.colunas %}
+    <a href="#coluna-{{ c.status }}" data-etapa="{{ c.status }}"{% if forloop.first %} class="ativa"{% endif %}>{{ c.curto }} <i>{{ c.pedidos|length }}</i></a>
+    {% endfor %}
+  </nav>
+  {% endif %}
+  <div class="painel-colunas{% if painel.colunas|length == 1 %} uma{% endif %}" style="--n: {{ painel.colunas|length }}">
+    {% for c in painel.colunas %}
+    <section class="coluna{% if forloop.first %} ativa{% endif %}" id="coluna-{{ c.status }}" data-etapa="{{ c.status }}">
+      <h2>{{ c.titulo }} <span>{{ c.pedidos|length }}</span></h2>
+      {% for p in c.pedidos %}{% include "gerenciar/pedidos/_cartao.html" %}{% empty %}<p class="coluna-vazia">Nada aqui.</p>{% endfor %}
+      {% if c.status == "concluido" and tem_mais_concluidos %}
+      <a class="coluna-mais" href="{% url 'gerenciar:pedidos' %}?tipo={{ tipo }}&amp;todos=1"
+         hx-get="{% url 'gerenciar:pedidos_colunas' %}?tipo={{ tipo }}&amp;todos=1" hx-sync="#colunas:replace" hx-target="#colunas" hx-swap="outerHTML">ver todos ↓</a>
+      {% endif %}
+    </section>
+    {% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% if eh_dono and atualizacao %}{% include "gerenciar/pedidos/_total.html" %}{% endif %}
+{% if atualizacao %}{% include "gerenciar/pedidos/_finalizar.html" %}{% endif %}

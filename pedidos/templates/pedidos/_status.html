@@ -1,0 +1,3 @@
+<p id="pedido-status" class="pill" role="status"
+   {% if not finalizado %}hx-get="{% url 'pedidos:status' pedido.codigo %}"
+   hx-trigger="every 15s" hx-swap="outerHTML"{% endif %}>{{ texto_status }}</p>

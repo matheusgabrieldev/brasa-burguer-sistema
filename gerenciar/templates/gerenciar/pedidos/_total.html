@@ -1,0 +1,6 @@
+{% load brl %}
+{# Só o Dono recebe este bloco (a view nem calcula para a Equipe). `atualizacao` = veio na consulta de 5 s. #}
+<div id="total-dia" class="painel-total"{% if atualizacao %} hx-swap-oob="true"{% endif %}>
+  <span>Hoje: {{ qtd_dia }} pedido{{ qtd_dia|pluralize }} · <b class="money">{{ total_dia|brl }}</b></span>
+  <button type="button" class="painel-olho" data-olho aria-label="Esconder ou mostrar o total">👁</button>
+</div>

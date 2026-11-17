@@ -1,0 +1,25 @@
+{% load static %}<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111111">
+  <meta name="robots" content="noindex">
+  {# htmx não guarda cópia da página no localStorage (levaria o total do dia do Dono junto) #}
+  <meta name="htmx-config" content='{"historyCacheSize":0}'>
+  <title>{% block titulo %}Meu cardápio{% endblock %} · Área da loja</title>
+  <link rel="icon" href="{% static 'img/favicon.png' %}">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/cliente.css' %}">
+  <link rel="stylesheet" href="{% static 'css/gerenciar.css' %}">
+  {% block estilos %}{% endblock %}
+</head>
+<body class="ger" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+  <div class="ger-app{% block app_classe %}{% endblock %}">
+    {% if messages %}<div class="ger-msgs">{% for m in messages %}<p class="ger-msg{% if m.tags == 'error' %} ger-msg-erro{% endif %}">{{ m }}</p>{% endfor %}</div>{% endif %}
+    {% block conteudo %}{% endblock %}
+  </div>
+  <script src="{% static 'vendor/htmx.min.js' %}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

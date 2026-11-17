@@ -1,0 +1,50 @@
+{% extends "base_cliente.html" %}
+{% load static %}
+{% block titulo %}Pedido nº {{ pedido.numero }} · {{ loja.nome }}{% endblock %}
+{% block conteudo %}
+<div class="topo"><a href="{% url 'cardapio' %}" aria-label="Voltar">‹</a><h1>Pedido recebido</h1></div>
+<section class="bloco">
+  <p class="num-grande">Pedido nº {{ pedido.numero }}</p>
+  {% include "pedidos/_status.html" %}
+  {% if whatsapp %}
+    <p><a id="confirmar-whatsapp" class="btn" href="{{ whatsapp }}" target="_blank" rel="noopener noreferrer"
+          {% if not finalizado %}data-codigo="{{ pedido.codigo }}"{% endif %}>Confirmar no WhatsApp</a></p>
+  {% endif %}
+</section>
+<section class="bloco">
+  <h2>Resumo do pedido</h2>
+  <p>{{ pedido.nome }} · {{ pedido.get_tipo_display }}</p>
+  {% if pedido.tipo == "delivery" %}
+    <p>{{ pedido.rua }}, {{ pedido.numero_end }} — {{ pedido.bairro_nome }}</p>
+    {% if pedido.referencia %}<p>{{ pedido.referencia }}</p>{% endif %}
+  {% endif %}
+  <ul>
+    {% for item in pedido.itens.all %}
+      <li>
+        <strong>{{ item.quantidade }}x {{ item.nome }}</strong> · R$ {{ item.total|floatformat:2 }}
+        {% if item.opcoes %}
+          <ul>{% for opcao in item.opcoes %}<li>{{ opcao.qtd }}x {{ opcao.nome }}</li>{% endfor %}</ul>
+        {% endif %}
+        {% if item.observacao %}<p>{{ item.observacao }}</p>{% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+  {% if pedido.observacao %}<p>Observação: {{ pedido.observacao }}</p>{% endif %}
+  <p>Subtotal: R$ {{ pedido.subtotal|floatformat:2 }}</p>
+  {% if pedido.tipo == "delivery" %}<p>Entrega: R$ {{ pedido.taxa_entrega|floatformat:2 }}</p>{% endif %}
+  {% if pedido.acrescimo %}<p>Acréscimo: R$ {{ pedido.acrescimo|floatformat:2 }}</p>{% endif %}
+  {% if pedido.desconto %}<p>Desconto: R$ {{ pedido.desconto|floatformat:2 }}</p>{% endif %}
+  <p><strong>Total: R$ {{ pedido.total|floatformat:2 }}</strong></p>
+  <p>Pagamento: {{ pedido.forma_pagamento_nome }}</p>
+  {% if pedido.troco_para %}<p>Troco para R$ {{ pedido.troco_para|floatformat:2 }}</p>{% endif %}
+  {% if mostrar_pix %}
+    <p>Chave Pix: <strong>{{ loja.chave_pix }}</strong></p>
+    {% if loja.pix_titular %}<p>Titular: {{ loja.pix_titular }}</p>{% endif %}
+    {% if loja.pix_banco %}<p>Banco: {{ loja.pix_banco }}</p>{% endif %}
+  {% endif %}
+</section>
+<a class="btn btn-line" href="{% url 'cardapio' %}">Voltar ao cardápio</a>
+{% endblock %}
+{% block scripts %}
+  {% if whatsapp and not finalizado %}<script src="{% static 'js/acompanhar.js' %}"></script>{% endif %}
+{% endblock %}

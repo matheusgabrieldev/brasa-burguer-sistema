@@ -1,0 +1,14 @@
+{% extends "gerenciar/base.html" %}
+{% block titulo %}Excluir {{ bairro.nome }}{% endblock %}
+{% block conteudo %}
+<div class="topo"><a href="{% url 'gerenciar:bairros' %}" aria-label="Voltar">‹</a><h1>Excluir bairro</h1></div>
+<section class="bloco">
+  <h2>Excluir “{{ bairro.nome }}”?</h2>
+  <p>O cliente não poderá mais escolher este bairro na entrega. Se quiser só pausar, desligue “Entrega neste bairro” em vez de excluir.</p>
+  <p class="muted">Os pedidos antigos continuam guardados com o nome e a taxa da época.</p>
+  <form method="post">{% csrf_token %}
+    <button class="btn btn-block btn-perigo-cheio" type="submit">Sim, excluir</button>
+  </form>
+  <a class="btn btn-line btn-block ger-cancelar" href="{% url 'gerenciar:bairros' %}">Não, voltar</a>
+</section>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "gerenciar/base.html" %}
+{% block titulo %}Categorias{% endblock %}
+{% block conteudo %}
+{% include "gerenciar/_topo.html" with aba="categorias" %}
+
+<section class="bloco">
+  <h2>Nova categoria</h2>
+  <form method="post" class="ger-linha-form">{% csrf_token %}
+    {{ form.nome }}
+    <button class="btn" type="submit">Criar</button>
+  </form>
+  {% if form.nome.errors %}<p class="erro-campo">{{ form.nome.errors|join:" " }}</p>{% endif %}
+</section>
+
+<div class="ger-cat">
+  {% for c in categorias %}
+  <article class="ger-cat-card{% if not c.visivel %} escondido{% endif %}">
+    <form method="post" action="{% url 'gerenciar:categoria_renomear' c.pk %}" class="ger-linha-form">{% csrf_token %}
+      <input class="input" name="nome" value="{{ c.nome }}" maxlength="80" aria-label="Nome da categoria" required>
+      <button class="btn btn-ghost btn-peq" type="submit">Salvar</button>
+    </form>
+    <p class="muted ger-cat-info">{{ c.produtos.all|length }} produto{{ c.produtos.all|length|pluralize }}{% if not c.visivel %} · escondida do cardápio{% endif %}</p>
+    <div class="ger-cat-acoes">
+      <form method="post" action="{% url 'gerenciar:categoria_mover' c.pk %}">{% csrf_token %}<input type="hidden" name="direcao" value="cima"><button class="btn btn-line btn-peq" type="submit" {% if forloop.first %}disabled{% endif %}>▲ Subir</button></form>
+      <form method="post" action="{% url 'gerenciar:categoria_mover' c.pk %}">{% csrf_token %}<input type="hidden" name="direcao" value="baixo"><button class="btn btn-line btn-peq" type="submit" {% if forloop.last %}disabled{% endif %}>▼ Descer</button></form>
+      <form method="post" action="{% url 'gerenciar:categoria_visivel' c.pk %}">{% csrf_token %}<button class="btn btn-line btn-peq" type="submit">{% if c.visivel %}Esconder{% else %}Mostrar{% endif %}</button></form>
+      <form method="post" action="{% url 'gerenciar:categoria_excluir' c.pk %}" onsubmit="return confirm('Excluir a categoria “{{ c.nome|escapejs }}”?')">{% csrf_token %}<button class="btn btn-line btn-peq btn-perigo" type="submit">Excluir</button></form>
+    </div>
+  </article>
+  {% empty %}
+  <p class="muted ger-dica">Nenhuma categoria ainda.</p>
+  {% endfor %}
+</div>
+<p class="muted ger-dica">Só dá para excluir uma categoria vazia. Para tirar uma categoria do cardápio por um tempo, use “Esconder”.</p>
+{% endblock %}

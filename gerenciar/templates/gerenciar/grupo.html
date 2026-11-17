@@ -1,0 +1,54 @@
+{% extends "gerenciar/base.html" %}
+{% block titulo %}{% if grupo %}Editar {{ grupo.nome }}{% else %}Novo grupo{% endif %}{% endblock %}
+{% block conteudo %}
+<div class="topo"><a href="{% url 'gerenciar:grupos' %}" aria-label="Voltar">‹</a><h1>{% if grupo %}Editar grupo{% else %}Novo grupo{% endif %}</h1></div>
+
+<form method="post" id="form-grupo" novalidate>{% csrf_token %}
+  {% if form.non_field_errors %}<p class="erro">{{ form.non_field_errors|join:" " }}</p>{% endif %}
+
+  <section class="bloco">
+    <h2>Regras</h2>
+    {% include "gerenciar/_campo.html" with campo=form.nome %}
+    {% include "gerenciar/_campo.html" with campo=form.tipo %}
+    <div class="ger-opcao-nums">
+      {% include "gerenciar/_campo.html" with campo=form.minimo %}
+      {% include "gerenciar/_campo.html" with campo=form.maximo %}
+    </div>
+    <small class="muted">Em “Escolha única” o máximo é sempre 1.</small>
+    <label class="ger-check ger-linha">{{ form.obrigatorio }} {{ form.obrigatorio.label }}</label>
+  </section>
+
+  <section class="bloco">
+    <h2>Opções</h2>
+    <p class="muted ger-sub">Preço 0 = sem custo. A quantidade máxima diz quantas vezes o cliente pode repetir a opção. Menor ordem aparece primeiro.</p>
+    {{ formset.management_form }}
+    {% if formset.non_form_errors %}<p class="erro">{{ formset.non_form_errors|join:" " }}</p>{% endif %}
+    <div id="opcoes-lista">
+      {% for f in formset %}{% include "gerenciar/_opcao_linha.html" %}{% endfor %}
+    </div>
+    <button type="button" class="btn btn-line btn-block" id="add-opcao">+ Adicionar opção</button>
+    <template id="opcao-modelo">{% include "gerenciar/_opcao_linha.html" with f=formset.empty_form %}</template>
+  </section>
+
+  <div class="ger-salvar"><button class="btn btn-block" type="submit">{% if grupo %}Salvar alterações{% else %}Criar grupo{% endif %}</button></div>
+</form>
+
+{% if grupo %}
+<div class="ger-excluir"><a class="btn btn-line btn-block btn-perigo" href="{% url 'gerenciar:grupo_excluir' grupo.pk %}">Excluir grupo</a></div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // "Adicionar opção": copia a linha-modelo trocando __prefix__ pelo próximo número
+  const total = document.getElementById("id_opcoes-TOTAL_FORMS");
+  document.getElementById("add-opcao").onclick = () => {
+    const n = parseInt(total.value, 10);
+    const html = document.getElementById("opcao-modelo").innerHTML.replaceAll("__prefix__", n);
+    document.getElementById("opcoes-lista").insertAdjacentHTML("beforeend", html);
+    total.value = n + 1;
+    const linhas = document.querySelectorAll("[data-linha]");
+    linhas[linhas.length - 1].querySelector("input[type=text]").focus();
+  };
+</script>
+{% endblock %}

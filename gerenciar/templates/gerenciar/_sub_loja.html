@@ -1,0 +1,6 @@
+<nav class="ger-abas ger-subabas">
+  <a href="{% url 'gerenciar:loja' %}" {% if sub == 'dados' %}class="ativa"{% endif %}>Dados</a>
+  <a href="{% url 'gerenciar:horarios' %}" {% if sub == 'horarios' %}class="ativa"{% endif %}>Horários</a>
+  <a href="{% url 'gerenciar:bairros' %}" {% if sub == 'bairros' %}class="ativa"{% endif %}>Bairros</a>
+  <a href="{% url 'gerenciar:pagamentos' %}" {% if sub == 'pagamentos' %}class="ativa"{% endif %}>Pagamentos</a>
+</nav>

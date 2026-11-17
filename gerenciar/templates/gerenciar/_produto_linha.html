@@ -1,0 +1,23 @@
+{% load brl %}
+<article class="ger-prod{% if not p.visivel %} escondido{% endif %}" id="p{{ p.pk }}">
+  <a class="ger-prod-link" href="{% url 'gerenciar:editar' p.pk %}">
+    {% if p.foto %}<img src="{{ p.foto }}" alt="" loading="lazy">{% else %}<span class="ger-sem-foto">🍔</span>{% endif %}
+    <span class="ger-prod-txt">
+      <b>{{ p.nome }}</b>
+      <span class="money">{{ p.preco|brl }}</span>
+      <span class="ger-tags">
+        {% if not p.visivel %}<span class="badge badge-alerta">Escondido</span>{% endif %}
+        {% if p.destaque %}<span class="badge badge-line">Destaque</span>{% endif %}
+        {% if p.mais_pedido %}<span class="badge badge-line">Mais pedido</span>{% endif %}
+      </span>
+    </span>
+  </a>
+  <span class="ger-setas">
+    <form method="post" action="{% url 'gerenciar:mover' p.pk %}">{% csrf_token %}<input type="hidden" name="direcao" value="cima"><button class="ger-seta" type="submit" aria-label="Subir {{ p.nome }}" {% if primeiro %}disabled{% endif %}>▲</button></form>
+    <form method="post" action="{% url 'gerenciar:mover' p.pk %}">{% csrf_token %}<input type="hidden" name="direcao" value="baixo"><button class="ger-seta" type="submit" aria-label="Descer {{ p.nome }}" {% if ultimo %}disabled{% endif %}>▼</button></form>
+  </span>
+  <button class="ger-switch{% if p.visivel %} on{% endif %}" type="button"
+          hx-post="{% url 'gerenciar:visivel' p.pk %}" hx-target="#p{{ p.pk }}" hx-swap="outerHTML"
+          aria-label="{% if p.visivel %}Esconder{% else %}Mostrar{% endif %} {{ p.nome }}"
+          title="{% if p.visivel %}Aparece no cardápio: toque para esconder{% else %}Escondido: toque para mostrar{% endif %}"><span></span></button>
+</article>

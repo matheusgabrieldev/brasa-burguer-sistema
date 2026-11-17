@@ -1,0 +1,123 @@
+{% load brl %}
+{% comment %}
+Detalhe de um pedido, carregado dentro de #detalhe (views_pedido_acoes._detalhe monta o contexto).
+Todo botão daqui faz POST e troca este mesmo pedaço pelo detalhe atualizado; o `de` vai junto
+para a regra ignorar toque de aparelho desatualizado. Fechar = esvaziar #detalhe (o CSS esconde; quem faz é o painel.js).
+Reimprimir, entregador, desconto e editar itens vêm em entregas seguintes (não aparecem aqui).
+{% endcomment %}
+{# data-url/data-pk: o painel.js recarrega este detalhe quando o painel muda e devolve o foco ao cartão ao fechar. #}
+<section class="detalhe" aria-label="Pedido {{ p.numero }}" data-url="{% url 'gerenciar:pedido' p.pk %}" data-pk="{{ p.pk }}">
+  <div class="detalhe-topo">
+    {# Fecha também com Esc. No celular o detalhe ocupa a tela toda, então o texto vira "← Voltar". #}
+    <button type="button" class="btn btn-line btn-peq detalhe-fechar" data-fechar><span class="so-pc">✕ Fechar</span><span class="so-cel">← Voltar</span></button>
+  </div>
+
+  <div class="detalhe-caixa-bloco">
+    <div class="detalhe-cab">
+      <span><b class="detalhe-num">#{{ p.numero }}</b> <span class="detalhe-tag">{{ p.get_tipo_display }} · {{ p.get_origem_display }}</span></span>
+      <span class="detalhe-etapa{% if p.status == 'cancelado' %} cancelado{% endif %}">{{ etapa_rotulo }}{% if minutos is not None %} · {{ minutos }} min{% endif %}</span>
+    </div>
+    <p class="detalhe-cli"><b>{{ p.nome }}</b> · <a class="detalhe-tel" href="tel:+55{{ p.telefone }}">{{ telefone }}</a></p>
+    {% if p.tipo == "delivery" %}
+    <p class="detalhe-meta">{{ p.rua }}, {{ p.numero_end }} — {{ p.bairro_nome }}{% if p.referencia %} · Ref.: {{ p.referencia }}{% endif %}</p>
+    {% endif %}
+    {% if p.agendado_para %}<p class="detalhe-meta">📅 Agendado para {{ p.agendado_para|date:"d/m H:i" }}</p>{% endif %}
+    {% if p.status == "cancelado" and p.motivo_cancelamento %}<p class="detalhe-motivo">Motivo: {{ p.motivo_cancelamento }}</p>{% endif %}
+  </div>
+
+  <div class="detalhe-caixa-bloco">
+    {% for item in p.itens.all %}
+    <div class="detalhe-item"><b>{{ item.quantidade }}x {{ item.nome }}</b><span>{{ item.total|brl }}</span></div>
+    {% if item.opcoes %}<div class="detalhe-op">{% for o in item.opcoes %}+ {% if o.qtd and o.qtd > 1 %}{{ o.qtd }}x {% endif %}{{ o.nome }}{% if not forloop.last %} · {% endif %}{% endfor %}</div>{% endif %}
+    {% if item.observacao %}<div class="detalhe-obs">⚠ {{ item.observacao }}</div>{% endif %}
+    {% endfor %}
+    {% if p.observacao %}<div class="detalhe-obs geral">📝 Obs. do pedido: {{ p.observacao }}</div>{% endif %}
+    <div class="detalhe-linha"><span>Subtotal</span><span>{{ p.subtotal|brl }}</span></div>
+    {% if p.taxa_entrega %}<div class="detalhe-linha"><span>Taxa{% if p.bairro_nome %} ({{ p.bairro_nome }}){% endif %}</span><span>{{ p.taxa_entrega|brl }}</span></div>{% endif %}
+    {% if p.acrescimo %}<div class="detalhe-linha"><span>Acréscimo</span><span>{{ p.acrescimo|brl }}</span></div>{% endif %}
+    {% if p.desconto %}<div class="detalhe-linha"><span>Desconto</span><span>− {{ p.desconto|brl }}</span></div>{% endif %}
+    <div class="detalhe-linha total"><span>Total</span><span class="money{% if p.status == 'cancelado' %} riscado{% endif %}">{{ p.total|brl }}</span></div>
+    <div class="detalhe-linha">
+      <span>Pagamento: {{ p.forma_pagamento_nome|default:"—" }}{% if p.troco_para %} · troco para {{ p.troco_para|brl }} (devolver {{ p.troco|brl }}){% endif %}</span>
+      <b class="detalhe-pg {% if p.pago %}ok{% else %}nao{% endif %}">{% if p.pago %}Pago{% else %}Não pago{% endif %}</b>
+    </div>
+  </div>
+
+  <div class="detalhe-caixa-bloco">
+    {% if etapa or p.status == "agendado" or p.status == "aguardando" or anterior %}
+    <p class="detalhe-titulo">Mudar etapa</p>
+    <div class="detalhe-botoes">
+      {% if etapa %}
+      <form hx-post="{% url 'gerenciar:pedido_avancar' p.pk %}" hx-target="#detalhe" hx-swap="innerHTML">
+        {% csrf_token %}<input type="hidden" name="de" value="{{ p.status }}">
+        <button class="btn detalhe-botao" type="submit">{{ etapa.1 }}</button>
+      </form>
+      {% endif %}
+      {% if p.status == "agendado" %}
+      <form hx-post="{% url 'gerenciar:pedido_comecar' p.pk %}" hx-target="#detalhe" hx-swap="innerHTML">
+        {% csrf_token %}<input type="hidden" name="de" value="{{ p.status }}">
+        <button class="btn detalhe-botao" type="submit">▶ Começar agora</button>
+      </form>
+      {% endif %}
+      {% if p.status == "aguardando" %}
+      <form hx-post="{% url 'gerenciar:pedido_aceitar' p.pk %}" hx-target="#detalhe" hx-swap="innerHTML">
+        {% csrf_token %}<input type="hidden" name="de" value="{{ p.status }}">
+        <button class="btn detalhe-botao" type="submit">✓ Aceitar</button>
+      </form>
+      {% endif %}
+    </div>
+    {% if p.status == "aguardando" %}
+    <form class="detalhe-form" hx-post="{% url 'gerenciar:pedido_recusar' p.pk %}" hx-target="#detalhe" hx-swap="innerHTML">
+      {% csrf_token %}<input type="hidden" name="de" value="{{ p.status }}">
+      <label class="detalhe-titulo" for="recusar-{{ p.pk }}">Recusar (motivo opcional)</label>
+      <div class="detalhe-linha-form">
+        <input class="input" id="recusar-{{ p.pk }}" name="motivo" maxlength="200" placeholder="Ex.: fora da área">
+        <button class="btn btn-line btn-perigo detalhe-botao" type="submit">✕ Recusar</button>
+      </div>
+    </form>
+    {% endif %}
+    {% if anterior %}
+    <form hx-post="{% url 'gerenciar:pedido_voltar' p.pk %}" hx-target="#detalhe" hx-swap="innerHTML">
+      {% csrf_token %}<input type="hidden" name="de" value="{{ p.status }}">
+      <button class="detalhe-voltar" type="submit">↩ voltar para {{ anterior }}</button>
+    </form>
+    {% endif %}
+    {% endif %}
+
+    <p class="detalhe-titulo">WhatsApp com mensagem pronta</p>
+    <div class="detalhe-botoes">
+      {% for rotulo, link in whatsapps %}
+      <a class="btn detalhe-botao detalhe-zap" href="{{ link }}" target="_blank" rel="noopener">{{ rotulo }}</a>
+      {% endfor %}
+    </div>
+
+    <p class="detalhe-titulo">Outras ações</p>
+    <div class="detalhe-botoes">
+      <form hx-post="{% url 'gerenciar:pedido_pago' p.pk %}" hx-target="#detalhe" hx-swap="innerHTML">
+        {% csrf_token %}<input type="hidden" name="de" value="{{ p.status }}">
+        <input type="hidden" name="pago" value="{% if p.pago %}0{% else %}1{% endif %}">
+        <button class="btn btn-line detalhe-botao" type="submit">💵 {% if p.pago %}Marcar como não pago{% else %}Marcar como pago{% endif %}</button>
+      </form>
+    </div>
+    {% if pode_cancelar %}
+    <form class="detalhe-form" hx-post="{% url 'gerenciar:pedido_cancelar' p.pk %}" hx-target="#detalhe" hx-swap="innerHTML">
+      {% csrf_token %}<input type="hidden" name="de" value="{{ p.status }}">
+      <label class="detalhe-titulo" for="cancelar-{{ p.pk }}">Cancelar pedido (motivo obrigatório)</label>
+      <div class="detalhe-linha-form">
+        <input class="input" id="cancelar-{{ p.pk }}" name="motivo" maxlength="200" required placeholder="Ex.: cliente desistiu">
+        <button class="btn btn-line btn-perigo detalhe-botao" type="submit">✕ Cancelar</button>
+      </div>
+      {% if erro %}<p class="erro-campo" role="alert">{{ erro }}</p>{% endif %}
+    </form>
+    {% endif %}
+  </div>
+
+  <div class="detalhe-caixa-bloco">
+    <p class="detalhe-titulo">Histórico</p>
+    <ul class="detalhe-hist">
+      {% for h in historico %}
+      <li><b>{{ h.em|time:"H:i" }}</b> · {{ h.get_status_display }}{% if h.nota %} · {{ h.nota }}{% endif %} · {{ h.quem }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>

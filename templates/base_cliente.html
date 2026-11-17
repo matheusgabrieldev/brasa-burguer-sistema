@@ -1,0 +1,22 @@
+{% load static %}<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111111">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>{% block titulo %}{{ loja.nome }} · Peça online{% endblock %}</title>
+  <link rel="icon" href="{% static 'img/favicon.png' %}">
+  <link rel="apple-touch-icon" href="{% static 'img/icon-192.png' %}">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/cliente.css' %}">
+  {% block estilos %}{% endblock %}
+</head>
+<body {% block body_attrs %}{% endblock %}>
+  <nav class="topbar"><a class="topbar-marca" href="{% url 'cardapio' %}"><img src="{% static 'img/logo.png' %}" alt="">{{ loja.nome }}</a><a class="nav" href="{% url 'cardapio' %}">Início</a><a class="nav" href="{% url 'cardapio' %}#cardapio">Cardápio</a>{% if loja.whatsapp %}<a class="nav" href="https://wa.me/{{ loja.whatsapp }}" target="_blank" rel="noopener">WhatsApp</a>{% endif %}</nav>
+  <div class="app">{% block conteudo %}{% endblock %}</div>
+  <div id="sheet-raiz"></div>
+  <script src="{% static 'vendor/htmx.min.js' %}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

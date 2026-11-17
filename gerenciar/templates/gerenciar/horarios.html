@@ -1,0 +1,26 @@
+{% extends "gerenciar/base.html" %}
+{% block titulo %}Horários{% endblock %}
+{% block conteudo %}
+{% include "gerenciar/_topo.html" with aba="loja" %}
+{% include "gerenciar/_sub_loja.html" with sub="horarios" %}
+
+<form method="post" novalidate>{% csrf_token %}
+  {{ formset.management_form }}
+  {% if formset.non_form_errors %}<p class="erro">{{ formset.non_form_errors|join:" " }}</p>{% endif %}
+  <section class="bloco">
+    <h2>Horário de funcionamento</h2>
+    <p class="muted ger-sub">Desmarque o dia em que a loja não abre.</p>
+    {% for f in formset %}
+    <div class="ger-opcao">
+      {{ f.id }}
+      <label class="ger-check">{{ f.ativo }} <b>{{ f.instance.get_dia_semana_display }}</b></label>
+      <div class="ger-opcao-nums">
+        {% include "gerenciar/_campo.html" with campo=f.abre %}
+        {% include "gerenciar/_campo.html" with campo=f.fecha %}
+      </div>
+    </div>
+    {% endfor %}
+  </section>
+  <div class="ger-salvar"><button class="btn btn-block" type="submit">Salvar horários</button></div>
+</form>
+{% endblock %}

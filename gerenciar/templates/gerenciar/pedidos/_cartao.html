@@ -1,0 +1,47 @@
+{% load brl %}
+{% comment %}
+Um pedido. Os campos extras (novo, minutos, vermelho, icone, qtd_itens, etapa, feito_em) vêm prontos
+de views_pedidos._enfeitar. Borda amarela (classe "novo") = ninguém abriu ainda.
+Tocar no cartão (ou Enter/Espaço com ele focado) abre o detalhe em #detalhe; o toque no botão da
+etapa não abre (filtro do click). O painel.js impede o Espaço de rolar a página.
+{% endcomment %}
+<article class="cartao{% if p.novo %} novo{% endif %}{% if p.status == 'concluido' or p.status == 'cancelado' %} apagado{% endif %}" id="pedido-{{ p.pk }}"
+         tabindex="0" role="button" aria-label="Abrir pedido {{ p.numero }}"
+         hx-get="{% url 'gerenciar:pedido' p.pk %}" hx-target="#detalhe" hx-swap="innerHTML"
+         hx-trigger="click[!target.closest('form')], keyup[(key=='Enter'||key==' ')&&!target.closest('form')]">
+  <div class="cartao-l1">
+    <b class="cartao-num">#{{ p.numero }}</b>
+    <span class="cartao-tag">{{ p.icone }} {{ p.get_origem_display }}</span>
+    {% if p.status == "agendado" %}
+    <span class="cartao-tempo">📅 {{ p.agendado_para|date:"d/m H:i" }}</span>
+    {% elif p.status == "concluido" or p.status == "cancelado" %}
+    <span class="cartao-tempo">{{ p.criado_em|time:"H:i" }}</span>
+    {% else %}
+    <span class="cartao-tempo{% if p.vermelho %} tempo-vermelho{% endif %}">{{ p.minutos }} min</span>
+    {% endif %}
+  </div>
+  {% if p.feito_em %}<span class="cartao-feito">📅 feito em {{ p.feito_em|date:"d/m" }}</span>{% endif %}
+  <div class="cartao-cli">{{ p.nome }}</div>
+  <div class="cartao-meta">{% if p.tipo == "delivery" %}{{ p.bairro_nome }}{% else %}{{ p.get_tipo_display }}{% endif %} · {{ p.qtd_itens }} ite{{ p.qtd_itens|pluralize:"m,ns" }}</div>
+  <div class="cartao-l3">
+    {% if p.status == "cancelado" %}
+    <span class="badge badge-alerta">Cancelado</span>
+    {% else %}
+    <span class="cartao-pg {% if p.pago %}ok{% else %}nao{% endif %}">{% if p.pago %}Pago{% else %}Não pago{% endif %}{% if p.forma_pagamento_nome %} · {{ p.forma_pagamento_nome }}{% endif %}</span>
+    {% endif %}
+    <b class="money{% if p.status == 'cancelado' %} riscado{% endif %}">{{ p.total|brl }}</b>
+  </div>
+  {% if p.status == "cancelado" and p.motivo_cancelamento %}<p class="cartao-motivo">{{ p.motivo_cancelamento }}</p>{% endif %}
+  {% if p.etapa %}
+  {% comment %}
+  hx-swap="none": o HTML da resposta (o detalhe) é ignorado aqui; valem só os eventos do HX-Trigger
+  ("painel-mudou" recarrega as colunas; "avisar-whatsapp" oferece a mensagem ao cliente).
+  {% endcomment %}
+  <form class="cartao-acao" method="post" action="{% url 'gerenciar:pedido_avancar' p.pk %}"
+        hx-post="{% url 'gerenciar:pedido_avancar' p.pk %}" hx-swap="none">
+    {% csrf_token %}
+    <input type="hidden" name="de" value="{{ p.status }}">
+    <button class="btn cartao-botao" type="submit">{{ p.etapa.1 }}</button>
+  </form>
+  {% endif %}
+</article>

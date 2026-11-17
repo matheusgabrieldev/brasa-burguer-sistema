@@ -1,0 +1,19 @@
+{% extends "gerenciar/base.html" %}
+{% block titulo %}Excluir {{ grupo.nome }}{% endblock %}
+{% block conteudo %}
+<div class="topo"><a href="{% url 'gerenciar:grupo_editar' grupo.pk %}" aria-label="Voltar">‹</a><h1>Excluir grupo</h1></div>
+<section class="bloco">
+  <h2>Excluir “{{ grupo.nome }}”?</h2>
+  {% if produtos %}
+  <p>Estes produtos perdem este grupo de opções (os produtos continuam no cardápio):</p>
+  <ul class="ger-lista-afetados">{% for p in produtos %}<li>{{ p.nome }}</li>{% endfor %}</ul>
+  {% else %}
+  <p>Nenhum produto usa este grupo.</p>
+  {% endif %}
+  <p class="muted">As opções do grupo também são apagadas e isso não pode ser desfeito. Os pedidos antigos continuam guardados.</p>
+  <form method="post">{% csrf_token %}
+    <button class="btn btn-block btn-perigo-cheio" type="submit">Sim, excluir</button>
+  </form>
+  <a class="btn btn-line btn-block ger-cancelar" href="{% url 'gerenciar:grupo_editar' grupo.pk %}">Não, voltar</a>
+</section>
+{% endblock %}

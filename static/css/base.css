@@ -1,0 +1,72 @@
+/* ===== Fontes (arquivos locais: funciona sem internet) ===== */
+
+@font-face { font-family: "Bricolage Grotesque"; font-weight: 600; font-display: swap; src: url("../fonts/bricolage-grotesque-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Bricolage Grotesque"; font-weight: 700; font-display: swap; src: url("../fonts/bricolage-grotesque-latin-700-normal.woff2") format("woff2"); }
+@font-face { font-family: "Bricolage Grotesque"; font-weight: 800; font-display: swap; src: url("../fonts/bricolage-grotesque-latin-800-normal.woff2") format("woff2"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 400; font-display: swap; src: url("../fonts/instrument-sans-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 500; font-display: swap; src: url("../fonts/instrument-sans-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 600; font-display: swap; src: url("../fonts/instrument-sans-latin-600-normal.woff2") format("woff2"); }
+
+/* ===== Visual da loja: branco com a marca do selo (preto e amarelo de apoio) ===== */
+:root {
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --surface-2: #f1f2f5;
+  --line: #e6e7eb;
+  --text: #16181d;
+  --muted: #667085;
+  --accent: #111111;          /* preto do selo: cor principal */
+  --accent-strong: #ffffff;
+  --accent-soft: rgba(17, 17, 17, .06);
+  --on-accent: #ffffff;
+  --alert: #e5483d;           /* vermelho só para alertas */
+  --ok: #1f9d55;
+  --apoio: #F2B705;           /* amarelo de apoio: só com texto preto em cima, nunca texto amarelo no branco */
+  --on-apoio: #111111;
+  --apoio-soft: rgba(242, 183, 5, .18);
+  --badge-bg: #111111;
+  --badge-text: #ffffff;
+  --font: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: "Bricolage Grotesque", sans-serif;
+  --display-weight: 400;
+  --display-transform: none;
+  --display-spacing: 0;
+  --fundo-estampa: none;       /* estampa de fundo (arte virá depois) */
+  --radius: 16px;
+  --shadow: 0 2px 10px rgba(16, 24, 40, .07);
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background-color: var(--bg); background-image: var(--fundo-estampa); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+.hidden { display: none !important; }
+.muted { color: var(--muted); }
+.money { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 12px; padding: 13px 18px; font-weight: 600; background: var(--accent); color: var(--on-accent); text-decoration: none; transition: transform .08s, filter .15s; }
+.btn:hover { filter: brightness(1.06); }
+.btn:active { transform: scale(.98); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn-ghost { background: var(--surface-2); color: var(--text); }
+.btn-line { background: transparent; color: var(--text); border: 1px solid var(--line); }
+.btn-block { width: 100%; }
+
+.badge { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 3px 7px; border-radius: 6px; background: var(--badge-bg); color: var(--badge-text); }
+.badge-line { background: transparent; border: 1px solid var(--line); color: var(--muted); }
+.badge-req { background: var(--text); color: var(--bg); }
+
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.field label { font-size: 13px; font-weight: 600; color: var(--muted); }
+.input, select.input, textarea.input { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); outline: none; }
+.input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+textarea.input { resize: vertical; min-height: 64px; }
+
+.stepper { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.stepper button { width: 36px; height: 36px; border: 0; background: transparent; font-size: 20px; line-height: 1; color: var(--accent); }
+.stepper button:disabled { color: var(--muted); opacity: .4; }
+.stepper span { min-width: 22px; text-align: center; font-weight: 600; }

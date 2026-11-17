@@ -1,0 +1,372 @@
+{
+ "fonte": "teste",
+ "lido_em": "2026-11-05",
+ "categorias": [
+  {
+   "nome": "Destaques",
+   "slug": "destaques",
+   "tipo": "FAVORITE",
+   "visivel": true,
+   "produtos": [
+    {
+     "nome": "Brasa Premium",
+     "slug": "le-premium",
+     "descricao": "desc Brasa Premium",
+     "visivel": true,
+     "controla_estoque": false,
+     "variantes": [
+      {
+       "nome": null,
+       "preco": 25,
+       "preco_original": 25
+      }
+     ],
+     "foto": "https://x/le-premium.jpg",
+     "grupos": []
+    }
+   ]
+  },
+  {
+   "nome": "Burguers",
+   "slug": "burguers",
+   "tipo": "NORMAL",
+   "visivel": true,
+   "produtos": [
+    {
+     "nome": "Brasa Premium",
+     "slug": "le-premium",
+     "descricao": "desc Brasa Premium",
+     "visivel": true,
+     "controla_estoque": false,
+     "variantes": [
+      {
+       "nome": null,
+       "preco": 25,
+       "preco_original": 25
+      }
+     ],
+     "foto": "https://x/le-premium.jpg",
+     "grupos": [
+      "9e5f41ff-d180-443f-a22e-c1a68821fb41",
+      "9e5b6281-d1e9-4f0d-9655-b85c8650d01a",
+      "9e5b644c-e396-4cc4-84cf-362fc29f16f9",
+      "78de8ac0-0c4d-11ee-8bab-350bee2c2279"
+     ]
+    },
+    {
+     "nome": "Cheddar Bacon",
+     "slug": "cheddar-bacon",
+     "descricao": "desc Cheddar Bacon",
+     "visivel": true,
+     "controla_estoque": false,
+     "variantes": [
+      {
+       "nome": null,
+       "preco": 22,
+       "preco_original": 22
+      }
+     ],
+     "foto": "https://x/cheddar-bacon.jpg",
+     "grupos": [
+      "9e5f41ff-d180-443f-a22e-c1a68821fb41",
+      "9e5b6281-d1e9-4f0d-9655-b85c8650d01a",
+      "9e5b644c-e396-4cc4-84cf-362fc29f16f9",
+      "78de8ac0-0c4d-11ee-8bab-350bee2c2279"
+     ]
+    }
+   ]
+  },
+  {
+   "nome": "Porções",
+   "slug": "porcoes",
+   "tipo": "NORMAL",
+   "visivel": true,
+   "produtos": [
+    {
+     "nome": "Onion Ring + molho barbecue",
+     "slug": "onion-ring-molho-barbecue",
+     "descricao": "desc Onion Ring + molho barbecue",
+     "visivel": true,
+     "controla_estoque": false,
+     "variantes": [
+      {
+       "nome": null,
+       "preco": 15,
+       "preco_original": 15
+      }
+     ],
+     "foto": "https://x/onion-ring-molho-barbecue.jpg",
+     "grupos": [
+      "9e5b644c-e396-4cc4-84cf-362fc29f16f9"
+     ]
+    }
+   ]
+  }
+ ],
+ "grupos": {
+  "9e5f41ff-d180-443f-a22e-c1a68821fb41": {
+   "nome": "Cebola Crua ou Caramelizada?",
+   "tipo": "many",
+   "min": 1,
+   "max": 10,
+   "obrigatorio": false,
+   "ativo": true,
+   "opcoes": [
+    {
+     "nome": "Sim, Cebola crua",
+     "preco": 0,
+     "max": 1,
+     "visivel": true,
+     "disponivel": "AVAILABLE"
+    },
+    {
+     "nome": "Sim, Cebola caramelizada",
+     "preco": 0,
+     "max": 1,
+     "visivel": true,
+     "disponivel": "AVAILABLE"
+    },
+    {
+     "nome": "Sem cebola nenhuma",
+     "preco": 0,
+     "max": 1,
+     "visivel": true,
+     "disponivel": "AVAILABLE"
+    }
+   ]
+  },
+  "9e5b6281-d1e9-4f0d-9655-b85c8650d01a": {
+   "nome": "Escolha como deseja a seu hambúrguer",
+   "tipo": "many",
+   "min": 1,
+   "max": 30,
+   "obrigatorio": false,
+   "ativo": true,
+   "opcoes": [
+    {
+     "nome": "Sem alface",
+     "preco": 0,
+     "max": 1,
+     "visivel": true,
+     "disponivel": "AVAILABLE"
+    },
+    {
+     "nome": "Sem tomate",
+     "preco": 0,
+     "max": 1,
+     "visivel": true,
+     "disponivel": "AVAILABLE"
+    },
+    {
+     "nome": "Sem cebola",
+     "preco": 0,
+     "max": 1,
+     "visivel": true,
+     "disponivel": "AVAILABLE"
+    },
+    {
+     "nome": "Completo",
+     "preco": 0,
+     "max": 1,
+     "visivel": true,
+     "disponivel": "AVAILABLE"
+    }
+   ]
+  },
+  "9e5b644c-e396-4cc4-84cf-362fc29f16f9": {
+   "nome": "Deseja sachê de ketchup",
+   "tipo": "one",
+   "min": 1,
+   "max": 1,
+   "obrigatorio": false,
+   "ativo": true,
+   "opcoes": [
+    {
+     "nome": "Sim, desejo sachê de ketchup",
+     "preco": 0,
+     "max": 1,
+     "visivel": true,
+     "disponivel": "AVAILABLE"
+    }
+   ]
+  },
+  "78de8ac0-0c4d-11ee-8bab-350bee2c2279": {
+   "nome": "Adicionais a parte",
+   "tipo": "many",
+   "min": 1,
+   "max": 30,
+   "obrigatorio": false,
+   "ativo": true,
+   "opcoes": [
+    {
+     "nome": "Carne",
+     "preco": 6,
+     "max": 10,
+     "visivel": true,
+     "disponivel": "AVAILABLE"
+    },
+    {
+     "nome": "Costela desfiada",
+     "preco": 5,
+     "max": 10,
+     "visivel": true,
+     "disponivel": "SOLD_OUT"
+    },
+    {
+     "nome": "Creme cheese",
+     "preco": 3,
+     "max": 10,
+     "visivel": true,
+     "disponivel": "AVAILABLE"
+    },
+    {
+     "nome": "Anéis de cebola",
+     "preco": 3,
+     "max": 10,
+     "visivel": true,
+     "disponivel": "SOLD_OUT"
+    },
+    {
+     "nome": "Bacon",
+     "preco": 2.5,
+     "max": 10,
+     "visivel": true,
+     "disponivel": "AVAILABLE"
+    },
+    {
+     "nome": "2 fatias Queijo cheddar",
+     "preco": 2.5,
+     "max": 10,
+     "visivel": true,
+     "disponivel": "AVAILABLE"
+    },
+    {
+     "nome": "Queijo Coalho",
+     "preco": 2,
+     "max": 10,
+     "visivel": true,
+     "disponivel": "AVAILABLE"
+    },
+    {
+     "nome": "Creme de cheddar",
+     "preco": 2,
+     "max": 10,
+     "visivel": true,
+     "disponivel": "AVAILABLE"
+    },
+    {
+     "nome": "Abacaxi em rodela",
+     "preco": 2,
+     "max": 10,
+     "visivel": true,
+     "disponivel": "SOLD_OUT"
+    },
+    {
+     "nome": "Ovo",
+     "preco": 1.5,
+     "max": 10,
+     "visivel": true,
+     "disponivel": "AVAILABLE"
+    },
+    {
+     "nome": "Melaço de cana",
+     "preco": 1,
+     "max": 10,
+     "visivel": true,
+     "disponivel": "AVAILABLE"
+    },
+    {
+     "nome": "Maionese artesanal extra",
+     "preco": 1.5,
+     "max": 10,
+     "visivel": true,
+     "disponivel": "AVAILABLE"
+    },
+    {
+     "nome": "Picles de pepino",
+     "preco": 1,
+     "max": 10,
+     "visivel": true,
+     "disponivel": "SOLD_OUT"
+    }
+   ]
+  }
+ },
+ "bairros": [
+  {
+   "nome": "Centro",
+   "taxa": 3,
+   "ativo": true
+  },
+  {
+   "nome": "Paratibe",
+   "taxa": 5,
+   "ativo": false
+  }
+ ],
+ "horarios": {
+  "sunday": {
+   "hours": [
+    {
+     "open": "18:00",
+     "close": "22:30"
+    }
+   ],
+   "is_active": true
+  },
+  "monday": {
+   "hours": [
+    {
+     "open": "18:00",
+     "close": "22:30"
+    }
+   ],
+   "is_active": false
+  },
+  "tuesday": {
+   "hours": [
+    {
+     "open": "02:00",
+     "close": "23:00"
+    }
+   ],
+   "is_active": false
+  },
+  "wednesday": {
+   "hours": [
+    {
+     "open": "18:15",
+     "close": "22:30"
+    }
+   ],
+   "is_active": true
+  },
+  "thursday": {
+   "hours": [
+    {
+     "open": "18:15",
+     "close": "22:30"
+    }
+   ],
+   "is_active": true
+  },
+  "friday": {
+   "hours": [
+    {
+     "open": "18:15",
+     "close": "22:30"
+    }
+   ],
+   "is_active": true
+  },
+  "saturday": {
+   "hours": [
+    {
+     "open": "18:15",
+     "close": "22:30"
+    }
+   ],
+   "is_active": true
+  }
+ }
+}

@@ -1,0 +1,48 @@
+{% extends "gerenciar/base.html" %}
+{% block titulo %}Loja{% endblock %}
+{% block conteudo %}
+{% include "gerenciar/_topo.html" with aba="loja" %}
+{% include "gerenciar/_sub_loja.html" with sub="dados" %}
+
+<section class="bloco">
+  <h2>Loja agora</h2>
+  <p class="ger-status {% if status.aberta %}aberta{% endif %}">{{ status.texto }}</p>
+  <form method="post" class="ger-modos">{% csrf_token %}
+    {% for valor, nome in modos %}
+    <button class="btn {% if cfg.modo_loja == valor %}ger-modo-atual{% else %}btn-line{% endif %}" type="submit" name="modo" value="{{ valor }}">{{ nome }}</button>
+    {% endfor %}
+  </form>
+  <small class="muted">“Pelo horário” abre e fecha sozinha. “Forçar” ignora o horário até você voltar para “Pelo horário”.</small>
+</section>
+
+<form method="post" novalidate>{% csrf_token %}
+  {% if form.non_field_errors %}<p class="erro">{{ form.non_field_errors|join:" " }}</p>{% endif %}
+  <section class="bloco">
+    <h2>Dados da loja</h2>
+    {% include "gerenciar/_campo.html" with campo=form.nome %}
+    {% include "gerenciar/_campo.html" with campo=form.slogan %}
+    {% include "gerenciar/_campo.html" with campo=form.endereco %}
+    {% include "gerenciar/_campo.html" with campo=form.whatsapp %}
+    {% include "gerenciar/_campo.html" with campo=form.instagram %}
+  </section>
+  <section class="bloco">
+    <h2>Pix</h2>
+    {% include "gerenciar/_campo.html" with campo=form.chave_pix %}
+    {% include "gerenciar/_campo.html" with campo=form.pix_titular %}
+    {% include "gerenciar/_campo.html" with campo=form.pix_banco %}
+  </section>
+  <section class="bloco">
+    <h2>Pedidos</h2>
+    {% include "gerenciar/_campo.html" with campo=form.prazo %}
+    {% include "gerenciar/_campo.html" with campo=form.pedido_minimo %}
+    {% include "gerenciar/_campo.html" with campo=form.vias_padrao %}
+    <fieldset class="field ger-entrada">
+      <legend>Entrada dos pedidos do site</legend>
+      {% for opcao in form.entrada_pedidos %}<label class="ger-check">{{ opcao.tag }} {{ opcao.choice_label }}</label>{% endfor %}
+      {% if form.entrada_pedidos.errors %}<p class="erro-campo">{{ form.entrada_pedidos.errors|join:" " }}</p>{% endif %}
+      <small class="muted">Pedidos que você lança pela loja não passam por aqui.</small>
+    </fieldset>
+  </section>
+  <div class="ger-salvar"><button class="btn btn-block" type="submit">Salvar dados</button></div>
+</form>
+{% endblock %}

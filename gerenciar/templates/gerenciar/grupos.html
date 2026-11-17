@@ -1,0 +1,22 @@
+{% extends "gerenciar/base.html" %}
+{% block titulo %}Grupos de opção{% endblock %}
+{% block conteudo %}
+{% include "gerenciar/_topo.html" with aba="grupos" %}
+
+<div class="ger-acoes">
+  <a class="btn" href="{% url 'gerenciar:grupo_novo' %}">+ Novo grupo</a>
+</div>
+
+<div class="ger-cat">
+  {% for g in grupos %}
+  <a class="ger-cat-card ger-grupo-item" href="{% url 'gerenciar:grupo_editar' g.pk %}">
+    <b>{{ g.nome }}</b>
+    <small class="muted">{% if g.tipo == "unica" %}Escolhe 1{% else %}Escolhe até {{ g.maximo }}{% endif %}{% if g.obrigatorio %} · obrigatório{% endif %} · {{ g.n_opcoes }} opç{{ g.n_opcoes|pluralize:"ão,ões" }}</small>
+    <small class="muted">{% if g.n_produtos %}{{ g.n_produtos }} produto{{ g.n_produtos|pluralize }}{% else %}Nenhum produto usa este grupo{% endif %}</small>
+  </a>
+  {% empty %}
+  <p class="muted ger-dica">Nenhum grupo ainda.</p>
+  {% endfor %}
+</div>
+<p class="muted ger-dica">Grupos são as escolhas do cliente ao pedir (adicionais, ponto da carne...). Para usar um grupo num produto, marque-o na tela do produto.</p>
+{% endblock %}

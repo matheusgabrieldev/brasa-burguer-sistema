@@ -1,0 +1,55 @@
+{% load brl l10n %}
+{# Fragmento do modal do produto (o HTMX coloca dentro de #sheet-raiz). O JS está em static/js/produto.js #}
+<div class="sheet-fundo" data-fechar>
+  <form class="sheet" role="dialog" aria-label="{{ produto.nome }}" data-modal-produto data-produto-id="{{ produto.id }}" data-nome="{{ produto.nome }}" data-foto="{{ produto.foto }}" data-preco="{{ produto.preco|unlocalize }}" onsubmit="return false">
+    <div class="sheet-corpo">
+      {% if produto.foto %}
+      <div class="sheet-foto"><img src="{{ produto.foto }}" alt="{{ produto.nome }}"><button class="fechar" type="button" data-fechar aria-label="Fechar">×</button></div>
+      {% else %}
+      <div style="text-align:right;padding:10px"><button class="btn btn-ghost" type="button" data-fechar>Fechar</button></div>
+      {% endif %}
+      <div class="sheet-info">
+        <h3>{{ produto.nome }}</h3>
+        {% if produto.descricao %}<p>{{ produto.descricao }}</p>{% endif %}
+        <span class="preco money">{{ produto.preco|brl }}</span>
+      </div>
+
+      {% for g in grupos %}
+      <div class="grupo" data-grupo data-tipo="{{ g.tipo }}" data-limite="{{ g.limite }}" data-minimo="{% if g.obrigatorio %}{% if g.minimo > 1 %}{{ g.minimo }}{% else %}1{% endif %}{% else %}0{% endif %}" data-obrigatorio="{% if g.obrigatorio %}1{% else %}0{% endif %}">
+        <div class="grupo-h"><span><b>{{ g.nome }}</b><small>{{ g.subtitulo }}</small></span>
+          <span class="tags"><span class="badge {% if g.obrigatorio %}badge-req{% else %}badge-line{% endif %}" data-cont>0/{{ g.limite }}{% if g.obrigatorio %} OBRIGATÓRIO{% endif %}</span></span>
+        </div>
+        {% if not g.disponivel %}<p role="status">Indisponível no momento: não há opções suficientes para {{ g.nome }}.</p>{% endif %}
+        {% for o in g.opcoes.all %}
+          {% if o.esgotado_em == hoje %}
+          <div class="opt esgotada"><span class="opt-nome">{{ o.nome }}</span><span class="badge badge-esgotado">Esgotado</span></div>
+          {% elif g.tipo == "varias" and o.qtd_maxima > 1 %}
+          <div class="opt" data-opcao="{{ o.id }}" data-preco="{{ o.preco|unlocalize }}" data-qmax="{{ o.qtd_maxima }}">
+            <span class="opt-nome">{{ o.nome }}{% if o.preco > 0 %}<br><span class="opt-preco money">+ {{ o.preco|brl }}</span>{% endif %}</span>
+            <span class="stepper"><button type="button" data-menos aria-label="Menos {{ o.nome }}">−</button><span data-q>0</span><button type="button" data-mais aria-label="Mais {{ o.nome }}">+</button></span>
+          </div>
+          {% else %}
+          <label class="opt"><span class="opt-nome">{{ o.nome }}</span>{% if o.preco > 0 %}<span class="opt-preco money">+ {{ o.preco|brl }}</span>{% endif %}<input type="{% if g.tipo == 'unica' %}radio{% else %}checkbox{% endif %}" name="g{{ g.id }}" data-opcao="{{ o.id }}" data-nome="{{ o.nome }}" data-preco="{{ o.preco|unlocalize }}"></label>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% endfor %}
+
+      <div class="obs"><div class="field"><label for="obs-item">Alguma observação?</label>
+        <textarea class="input" id="obs-item" maxlength="140" placeholder="Ex.: caprichar no molho"></textarea>
+        <small class="muted" id="obs-cont">0/140</small></div></div>
+    </div>
+    <div class="sheet-rodape">
+      <span class="stepper"><button type="button" id="q-menos" aria-label="Menos">−</button><span id="q-val">1</span><button type="button" id="q-mais" aria-label="Mais">+</button></span>
+      {% if produto.esgotado_em == hoje %}
+      <button class="btn" type="button" disabled>Esgotado</button>
+      {% elif not grupos_disponiveis %}
+      <button class="btn" type="button" disabled>Indisponível no momento</button>
+      {% elif not status.aberta and not agendavel %}
+      <button class="btn" type="button" disabled>Loja fechada</button>
+      {% else %}
+      <button class="btn" type="button" id="btn-add"><span id="btn-add-txt">Adicionar</span><span class="money" id="btn-add-preco"></span></button>
+      {% endif %}
+    </div>
+  </form>
+</div>

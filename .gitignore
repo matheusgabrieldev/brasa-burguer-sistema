@@ -1,0 +1,8 @@
+.venv/
+db.sqlite3
+media/
+.env
+__pycache__/
+staticfiles/
+.superpowers/
+.pytest_cache/

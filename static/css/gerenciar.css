@@ -1,0 +1,109 @@
+/* ===== Área da loja (/gerenciar/) — feita primeiro para o celular ===== */
+.ger-app { max-width: 640px; margin: 0 auto; min-height: 100vh; padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
+.btn-peq { padding: 8px 14px; font-size: 13.5px; border-radius: 10px; }
+.btn-perigo { color: var(--alert); border-color: rgba(229, 72, 61, .35); }
+.badge-alerta { background: var(--alert); color: #fff; }
+.erro-campo { color: var(--alert); font-size: 13px; font-weight: 600; margin: 2px 0 0; }
+
+/* mensagens ("Produto salvo!") */
+.ger-msgs { position: sticky; top: 0; z-index: 30; padding: 10px 14px 0; }
+.ger-msg { margin: 0 0 8px; padding: 12px 14px; border-radius: 12px; background: var(--ok); color: #fff; font-weight: 600; box-shadow: var(--shadow); animation: ger-sumir 4s forwards; }
+@keyframes ger-sumir { 0%, 80% { opacity: 1; } 100% { opacity: 0; visibility: hidden; height: 0; padding: 0; margin: 0; } }
+
+/* login */
+.ger-entrar { max-width: 380px; margin: 0 auto; padding: 48px 16px; text-align: center; }
+.ger-entrar h1 { margin: 14px 0 4px; font-family: "Bricolage Grotesque", var(--font); }
+.ger-entrar .bloco { margin: 22px 0 16px; text-align: left; }
+.ger-logo { width: 88px; height: 88px; border-radius: 50%; margin: 0 auto; box-shadow: var(--shadow); }
+.ger-voltar { font-size: 14px; }
+
+/* lista */
+.ger-topo { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: var(--surface); border-bottom: 1px solid var(--line); }
+.ger-topo img { width: 44px; height: 44px; border-radius: 50%; }
+.ger-topo div { flex: 1; min-width: 0; }
+.ger-topo h1 { margin: 0; font-size: 19px; font-family: "Bricolage Grotesque", var(--font); }
+.ger-acoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 14px 16px 0; }
+.ger-busca { padding: 12px 16px 0; }
+.ger-cat { padding: 6px 16px 0; }
+.ger-cat h2 { font-size: 16px; margin: 18px 0 10px; font-family: "Bricolage Grotesque", var(--font); }
+.ger-prod { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; padding: 10px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.ger-prod.escondido { opacity: .6; }
+.ger-prod-link { flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.ger-prod-link img, .ger-sem-foto { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; flex: none; background: var(--surface-2); display: grid; place-items: center; font-size: 24px; }
+.ger-prod-txt { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.ger-prod-txt b { font-size: 14.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ger-prod-txt .money { font-size: 13.5px; color: var(--muted); }
+.ger-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.ger-tags:empty { display: none; }
+.ger-dica { padding: 8px 16px; font-size: 13px; }
+
+/* chave liga/desliga (área de toque grande para o dedo) */
+.ger-switch { flex: none; width: 52px; height: 44px; border: 0; background: none; padding: 0; display: grid; place-items: center; }
+.ger-switch span { width: 46px; height: 28px; border-radius: 999px; background: #c9ccd3; position: relative; transition: background .15s; }
+.ger-switch span::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: transform .15s; }
+.ger-switch.on span { background: var(--ok); }
+.ger-switch.on span::after { transform: translateX(18px); }
+
+/* formulário do produto */
+.ger-sub { margin: -6px 0 12px; font-size: 13px; }
+.ger-foto { display: grid; place-items: center; aspect-ratio: 4 / 3; border-radius: 14px; overflow: hidden; background: var(--surface-2); border: 2px dashed var(--line); cursor: pointer; text-align: center; color: var(--muted); font-size: 14px; }
+.ger-foto img { width: 100%; height: 100%; object-fit: cover; }
+.ger-file { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.ger-foto-acoes { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 10px 0 6px; }
+.ger-check { display: flex; align-items: center; gap: 10px; font-size: 14px; cursor: pointer; }
+.ger-check input { width: 20px; height: 20px; accent-color: var(--accent); flex: none; }
+.ger-linha { padding: 12px 0; border-bottom: 1px solid var(--line); }
+.ger-linha:last-child { border-bottom: 0; padding-bottom: 0; }
+.ger-grupo { display: flex; gap: 12px; padding: 12px; margin-bottom: 8px; border: 1px solid var(--line); border-radius: 12px; cursor: pointer; }
+.ger-grupo:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+.ger-grupo input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); flex: none; }
+.ger-grupo span { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.ger-grupo small { font-size: 12.5px; line-height: 1.4; }
+.ger-grupo-regra { font-weight: 600; }
+.ger-salvar { position: sticky; bottom: 0; z-index: 10; padding: 12px 14px calc(12px + env(safe-area-inset-bottom)); background: var(--bg); border-top: 1px solid var(--line); }
+.ger-excluir { padding: 10px 14px 0; }
+.ger .input { font-size: 16px; } /* 16px evita o zoom automático do iPhone ao tocar no campo */
+
+/* cor de apoio na área da loja */
+.ger-topo { box-shadow: inset 0 -3px 0 var(--apoio); }
+.ger-tags .badge-line { border-color: var(--apoio); color: var(--text); background: var(--apoio-soft); }
+
+/* abas, setas de ordem, categorias, confirmação */
+.ger-abas { display: flex; gap: 8px; padding: 10px 16px 0; overflow-x: auto; }
+.ger-abas a { flex: none; padding: 9px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); text-decoration: none; font-weight: 600; font-size: 14px; }
+.ger-abas a.ativa { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.ger-setas { display: flex; flex-direction: column; flex: none; }
+.ger-seta { width: 36px; height: 24px; border: 0; background: none; padding: 0; color: var(--muted); font-size: 12px; }
+.ger-seta:disabled { opacity: .25; cursor: default; }
+.ger-msg-erro { background: var(--alert); }
+.ger-linha-form { display: flex; gap: 8px; align-items: center; }
+.ger-linha-form .input { flex: 1; min-width: 0; }
+.ger-cat-card { margin-bottom: 10px; padding: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.ger-cat-card.escondido { opacity: .65; }
+.ger-cat-info { margin: 8px 0; font-size: 13px; }
+.ger-cat-acoes { display: flex; flex-wrap: wrap; gap: 8px; }
+.ger-grupo { display: flex; align-items: flex-start; gap: 10px; }
+.ger-grupo-marca { display: flex; gap: 12px; flex: 1; min-width: 0; cursor: pointer; }
+.ger-grupo-marca input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); flex: none; }
+.ger-grupo-marca span { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.ger-ordem { width: 64px; flex: none; text-align: center; padding: 8px; }
+.btn-perigo-cheio { background: var(--alert); color: #fff; }
+.ger-cancelar { margin-top: 10px; }
+
+/* grupos de opção */
+.ger-grupo-item { display: flex; flex-direction: column; gap: 3px; text-decoration: none; }
+.ger-opcao { padding: 12px; margin-bottom: 10px; border: 1px solid var(--line); border-radius: 12px; }
+.ger-opcao-nums { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 10px; }
+.ger-opcao .ger-ordem { width: 100%; }
+.ger-lista-afetados { margin: 0 0 12px; padding-left: 20px; }
+
+/* configuração da loja */
+.ger-subabas { padding-top: 6px; }
+.ger-subabas a { padding: 7px 12px; font-size: 13px; }
+.ger-status { margin: 0 0 12px; font-size: 18px; font-weight: 700; color: var(--alert); }
+.ger-status.aberta { color: var(--ok); }
+.ger-modos { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; margin-bottom: 10px; }
+.ger-modos .btn { padding: 14px 8px; }
+.ger-modo-atual { background: var(--accent); color: var(--on-accent); }
+.ger-entrada { border: 0; padding: 0; margin: 0; display: grid; gap: 10px; }
+.ger-entrada legend { font-weight: 600; margin-bottom: 4px; }
